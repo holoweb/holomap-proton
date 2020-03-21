@@ -2,13 +2,15 @@
 
 Holomap is a real-time collaborative holonic mapping platform.
 
-## Installation
+Dependencies: *imagemagick*
 
-    ./install.sh
+## Installation
+`sudo apt install imagemagick`
+
+`./install.sh`
 
 ## Dev Server
-
-    ./start_dev
+`./start_dev`
 
 You should see it running at <https://127.0.0.1/>
 
@@ -17,8 +19,7 @@ Front-end files are loaded from pub/index.dev.html, pub/holomap.js and /pub/js
 Note that this server will restart when files are changed.
 
 ## Production server
-
-    ./start_production
+`./start_production`
 
 Front-end files are loaded from pub/index.html and pub/holomap.build.js only.
 
