@@ -2,6 +2,8 @@
 
 Holomap is a real-time collaborative holonic mapping platform.
 
+[this documentation will be updated soon]
+
 Dependencies: *imagemagick*
 
 ## Installation
