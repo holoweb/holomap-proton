@@ -6,6 +6,7 @@ Dependencies: *imagemagick*
 
 ## Installation
 `sudo apt install imagemagick`
+
 `./install.sh`
 
 ## Dev Server
