@@ -1,0 +1,142 @@
+<!-- 
+	
+Holomap - Real-time collaborative holonic mapping platform
+Copyright (C) 2020 Chris Larcombe
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+ -->
+<html>
+	<head>
+		<title>Holomap Proton (Development Mode)</title>
+
+		<link rel="icon" href="/ico/favicon.ico" type="image/x-icon" /> 
+		<link rel="shortcut icon" href="/ico/favicon.ico" type="image/x-icon" />
+
+		<link rel="stylesheet" type="text/css" href="/css/bootstrap-combined.no-icons.min.css">
+		<link rel="stylesheet" type="text/css" href="/css/page.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/skin.css"/>
+
+		<script src="/lib/sweetalert.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="/css/sweetalert.css">
+
+		<script src="/lib/twin-bcrypt.min.js"></script>
+		<script src="/lib/sha512.js"></script>
+		<script src="/lib/sha3.js"></script>
+		<script src="/lib/aes.js"></script>
+
+		<script type="text/javascript" src="/lib/jquery.min.js"></script>
+		<script type="text/javascript" src="/lib/jquery.form.js"></script>
+
+		<script type="text/javascript" src="/lib/jquery.timepicker.js"></script>
+		<link rel="stylesheet" type="text/css" href="/css/jquery.timepicker.css" />
+		<script type="text/javascript" src="/lib/bootstrap-datepicker.js"></script>
+		<link rel="stylesheet" type="text/css" href="/css/bootstrap-datepicker.css" />
+		<script src="/lib/datepair.js"></script>
+		<script src="/lib/jquery.datepair.js"></script>
+
+		<script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=vrl89y7ehn43fqa87kpggagxolq9xb5ygp7f68o0pivgo6kd"></script>
+
+		<script type='text/javascript' src="/lib/bootstrap-typeahead.js"></script>
+
+		<script data-main="holomap" src="/lib/require.js"></script>
+
+	</head>
+<body >
+		<div id="loginPopup" class="loginPopup">
+			<a id="closeLoginPopup" href="#" class="close"><img src="/img/close.png" class="btn_close" title="Close Window" alt="Close" /></a>
+			<h2>Login to Holomap Proton</h2>
+			  <form id="loginForm" class="signin" action="javascript:">
+			        <fieldset class="textbox">
+			        <label class="username" style="margin-top: 18px;">
+			        <span>Username</span>
+			        <input id="username" name="username" value="" type="text" autocomplete="on" placeholder="Username" style="height:30px">
+			        </label>
+			        <label class="password">
+			        <span>Password</span>
+			        <input id="password" name="password" value="" type="password" placeholder="Password" style="height:30px">
+			        </label>
+			        <button id="loginButton" class="submit button" type="submit">Login</button>
+			        <p>
+			        <a id='forgotPassword' class="forgot" href="#">Forgot your password?</a>
+			        </p>        
+			        </fieldset>
+			  </form>
+		</div>
+
+		<div id="joinPopup" class="joinPopup" style="height:420px;">
+			<a id="closeJoinPopup" href="#" class="close"><img src="/img/close.png" class="btn_close" title="Close Window" alt="Close" /></a>
+			<h2>Join Holomap</h2>
+			  <form id="joinForm" class="signin" action="javascript:">
+			        <fieldset class="textbox">
+			        <label class="username" style="margin-top: 18px;">
+			        <span>Username</span>
+			        <input style="height:30px" id="jfusername" name="username" value="" type="text" autocomplete="on" placeholder="Enter username">
+			        </label>
+			         <label class="username">
+			        <span>E-mail</span>
+			        <input style="height:30px" id="jfemail" name="email" value="" type="text" autocomplete="on" placeholder="Enter e-mail address">
+			        </label>
+			         <label class="username">
+			        <span>Password</span>
+			        <input style="height:30px" id="jfpassword" name="password" value="" type="password" placeholder="Enter password">
+			        </label>
+			        <label class="password">
+			        <span>Password</span>
+			        <input style="height:30px" id="jfpassword2" name="password" value="" type="password" placeholder="Confirm password">
+			        </label>
+			        <button id="joinButton" class="submit button" type="submit">Join</button>
+			        </fieldset>
+			  </form>
+		</div>
+
+		<div id="screenShade"></div>
+
+		<div id="main" style="margin:0px;padding:0px;"> 
+
+		<div id="searchRegion" class="searchRegion">
+			<input id="searchField" type="text" placeholder="Search Holomap"></input>
+			<img id="clearSearchIcon" src="/img/cancel.png"></img>
+		</div> 
+		
+		<div id="infoLoginRegion" class="infoLoginRegion">
+			<div id="loginLinks"></div>
+		</div>
+
+		<!-- INFOPANEL !-->
+	    <div id="simple" class="resizeMe">
+	    	<div style="position:absolute; left:0; top:0; height:100%; width: 100%; border-left: 1px solid black;">
+	    		<div id="infoPanelDividerBar" style="position: absolute; top: 0px; left: 0px; z-index: 3; margin-top: 174px; opacity: 0; width: 20px; height: 100%;">  
+	    		</div>
+	    		<div id="infoPanelMain" style="z-index: 1; margin-left: 0px; position:absolute; left:0px; width: 100%; height: 100%; background: rgba(0,0,0,0.2); text-align: center; ">
+	    		</div>
+	    	</div>
+	    </div>
+
+	    <div id="addressIndicator">
+	    </div>
+
+	    <div style="position:absolute; left: 10px; bottom: 7px; color: #AAAAAA; font-size: 8pt; font-family: archivo_regular, sans-serif;">
+	     	&copy; 2020 Holoweb Foundation
+		</div>
+		
+		<div style="position: absolute; left: 15px; top: 15px; z-index: 5;">
+			<div id="navHome" class="navIcon"></div>
+			<div id="navProfile" class="navIcon"></div>
+			<div id="navPrep" class="navIcon"></div>
+			<div id="navSearch" class="navIcon"></div>
+		</div>
+	</div>
+</body>
+</html>

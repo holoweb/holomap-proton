@@ -1,0 +1,25 @@
+body
+{
+	background-image: -webkit-gradient(
+	linear,
+	left top,
+	left bottom,
+	color-stop(0, #000000),
+	color-stop(1, #002255)
+	);
+	background-image: -o-linear-gradient(bottom, #000000 50%, #002255 100%);
+	background-image: -moz-linear-gradient(bottom, #000000 50%, #002255 100%);
+	background-image: -webkit-linear-gradient(bottom, #000000 50%, #002255 100%);
+	background-image: -ms-linear-gradient(bottom, #000000 50%, #002f55 100%);
+	background-image: linear-gradient(to bottom, #000000 50%, #002255 100%);
+}
+
+A:link { text-decoration: none; font-weight: bold; color: rgb(130, 150, 228);} 
+A:hover { text-decoration: none; font-weight: bold; color: rgb(130, 150, 228);} 
+A:active { text-decoration: none; color: rgb(130, 150, 228); }
+A:visited { text-decoration: none; color: rgb(130, 150, 228); }
+
+#infoPanelHeader
+{
+	background: rgba(62,20,79, 0.75);
+}

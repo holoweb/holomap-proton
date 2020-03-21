@@ -1,0 +1,2 @@
+export HOLOMAP_DEV=1
+sudo -E npm run dev

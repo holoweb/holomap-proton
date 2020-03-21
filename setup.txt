@@ -1,0 +1,13 @@
+Post-installation Setup:
+
+1. Start the server with ./start_dev or ./start_production
+
+2. Create admin username and set password
+
+	- Open https://localhost/?j=1
+	- Click Join (top right of screen)
+	- Complete form, entering admin as username
+
+3. Once logged in as admin, navigate to: ~hmadmin.admin (enter this in the search bar)
+
+4. Create ontologies (holon types).

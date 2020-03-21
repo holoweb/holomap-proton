@@ -1,0 +1,6 @@
+{"host": "",
+"secure": "true",
+"requiresAuth": "true",
+"port": "465",
+"auth": {"user": "", "pass": ""}
+}
