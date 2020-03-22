@@ -1,0 +1,11 @@
+.DS_Store
+/.env
+/node_modules/
+/npm-debug.log
+/pub/holomap.build.js
+/tmp/
+/pub/img/user/
+/pub/img/user/thumb/
+db
+package-lock.json
+sslcert
