@@ -82,6 +82,18 @@ NodeStore = (function()
     });
   }
 
+  NodeStore.prototype.count = function(query, callback)
+  {
+    db.count(query, function (err, c)
+    {
+      if (!err && c != undefined)
+        callback(c);
+      else
+        callback(null);
+    });
+  }
+
+
   NodeStore.prototype.get_nodes = function(query, callback)
   {
     db.find(query, function (err, docs)

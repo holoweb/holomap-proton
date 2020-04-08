@@ -86,7 +86,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		availableWidth = viewWidth - w;
 
 		// Set viewer geometry
-		VIEWER.geom = { ringSize: 50, margin: 60};
+		VIEWER.geom = { ringSize: 55, margin: 60};
 		updateViewerGeometry();
 
 		// Create a pixi renderer
@@ -262,7 +262,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		if (h && h.parent && h.parent._id && BROWSER.cache.h[h.parent._id] && BROWSER.cache.h[h.parent._id]._t == "ss")
 			return;
 
-		if (h && h._id && BROWSER.cache.h[h._id] && BROWSER.cache.h[h._id]._t == "me" && h.parent && h.parent._id && BROWSER.cache.h[h.parent._id] && BROWSER.cache.h[h.parent._id]._t == "ssi")
+		if (h && h._id && BROWSER.cache.h[h._id] && BROWSER.cache.h[h._id]._t == "profile" && h.parent && h.parent._id && BROWSER.cache.h[h.parent._id] && BROWSER.cache.h[h.parent._id]._t == "ssi")
 			return;
 
 		if (h.isHolon)
@@ -326,7 +326,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		{
 			if (targetHolon.children[i].isHolon && !targetHolon.children[i].px)
 			{
-				if (BROWSER.cache.h[targetHolon.children[i]._id]._t == "me")
+				if (BROWSER.cache.h[targetHolon.children[i]._id]._t == "profile")
 					continue;
 
 				var w = VIEWER.geom.diam * targetHolon.children[i].scale.x - 20;
@@ -1371,7 +1371,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			var holonTypeColourRing = new PIXI.Graphics();
 			targetHolonImage.addChild(holonTypeColourRing);
 			holonTypeColourRing.lineStyle(4, 0xFFFFFF);
-			holonTypeColourRing.arc(0,0 ,nd-3, 0, 2*Math.PI, false );
+			holonTypeColourRing.arc(0,0 ,nd, 0, 2*Math.PI, false );
 			holonTypeColourRing.alpha = 0.5;
 			holonTypeColourRing.tint = typeColours[holon._t];
 			targetHolonImage.r1 = holonTypeColourRing;
@@ -1379,7 +1379,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			var holonTypeColourRing2 = new PIXI.Graphics();
 			targetHolonImage.addChild(holonTypeColourRing2);
 			holonTypeColourRing2.lineStyle(4, 0xFFFFFF);
-			holonTypeColourRing2.arc(0,0 , nd-3, offset, 2*Math.PI + offset, false );
+			holonTypeColourRing2.arc(0,0 , nd, offset, 2*Math.PI + offset, false );
 			holonTypeColourRing2.alpha = 0.5;
 			holonTypeColourRing2.tint = typeColours[holon._t];
 			targetHolonImage.r2 = holonTypeColourRing2;
@@ -1677,7 +1677,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		var holonTypeColourRing = new PIXI.Graphics();
 		childHolonImage.addChild(holonTypeColourRing);
 		holonTypeColourRing.lineStyle(4, 0xFFFFFF);
-		holonTypeColourRing.arc(0,0 ,nd-3, 0, 2*Math.PI, false );
+		holonTypeColourRing.arc(0,0 ,nd, 0, 2*Math.PI, false );
 		holonTypeColourRing.alpha = 0.5;
 		holonTypeColourRing.tint = typeColours[holon._t];
 		childHolonImage.r1 = holonTypeColourRing;
@@ -1685,7 +1685,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		var holonTypeColourRing2 = new PIXI.Graphics();
 		childHolonImage.addChild(holonTypeColourRing2);
 		holonTypeColourRing2.lineStyle(4, 0xFFFFFF);
-		holonTypeColourRing2.arc(0,0 , nd-3, offset, 2*Math.PI + offset, false );
+		holonTypeColourRing2.arc(0,0 , nd, offset, 2*Math.PI + offset, false );
 		holonTypeColourRing2.alpha = 0.5;
 		holonTypeColourRing2.tint = typeColours[holon._t];
 		childHolonImage.r2 = holonTypeColourRing2;

@@ -1,0 +1,952 @@
+<!-- 
+	
+Holomap - Real-time collaborative holonic mapping platform
+Copyright (C) 2020 Chris Larcombe
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+ -->
+<html>
+	<head>
+		<title>Holomap Proton ( PORTAL ) </title>
+		<link rel="icon" href="/ico/favicon.ico" type="image/x-icon" /> 
+		<link rel="shortcut icon" href="/ico/favicon.ico" type="image/x-icon" />
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<link rel="stylesheet" type="text/css" href="/css/page.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/skin.css"/>
+		<style>
+			body {
+				overflow: hidden;
+			}
+
+			#annotation
+			{
+				position:absolute; left: 50px; bottom: 200px; color: #FFFFFF; font-size: 20pt; font-family: archivo_regular, sans-serif; opacity: 1; z-index: 9999; text-shadow: 1px 1px 2px black; pointer-events:none;
+
+			    -webkit-animation: fadein 0.5s; /* Safari, Chrome and Opera > 12.1 */
+			       -moz-animation: fadein 0.5s; /* Firefox < 16 */
+			        -ms-animation: fadein 0.5s; /* Internet Explorer */
+			         -o-animation: fadein 0.5s; /* Opera < 12.1 */
+						animation: fadein 0.5s;
+						
+				text-shadow: 0px 0px 5px #000000;
+			}
+
+			#descriptionBox
+			{
+				position: absolute;
+				top: 30px;
+				right: 5px;
+				width: 600px;
+				overflow-y: auto;
+				overflow-x: hidden;
+				z-index: 555;
+				max-height: calc(100% - 41px);
+			}
+
+			#descriptionTitle
+			{
+				color: #FFFFFF;
+				font-size: 25pt;
+				font-family: archivo_regular, sans-serif;
+				text-shadow: 1px 1px 2px black; 
+
+				background-color: rgba(255,255,255,0);
+				border-radius: 20px;
+				padding-left: 10px;
+				margin-right: 10px;
+				padding: 10px;
+				
+				width: calc(100% - 10px);
+
+			    -webkit-animation: fadein 1s; /* Safari, Chrome and Opera > 12.1 */
+			       -moz-animation: fadein 1s; /* Firefox < 16 */
+			        -ms-animation: fadein 1s; /* Internet Explorer */
+			         -o-animation: fadein 1s; /* Opera < 12.1 */
+			            animation: fadein 1s;
+			}
+
+
+			#descriptionContent
+			{
+				padding: 10px;
+				color: #FFFFFF;
+				font-size: 16pt;
+				font-family: archivo_regular, sans-serif;
+				overflow-x: hidden;
+
+			    -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+			       -moz-animation: fadein 2s; /* Firefox < 16 */
+			        -ms-animation: fadein 2s; /* Internet Explorer */
+			         -o-animation: fadein 2s; /* Opera < 12.1 */
+			            animation: fadein 2s;
+			}
+
+
+			@keyframes fadein {
+			    from { opacity: 0; }
+			    to   { opacity: 1; }
+			}
+
+			/* Firefox < 16 */
+			@-moz-keyframes fadein {
+			    from { opacity: 0; }
+			    to   { opacity: 1; }
+			}
+
+			/* Safari, Chrome and Opera > 12.1 */
+			@-webkit-keyframes fadein {
+			    from { opacity: 0; }
+			    to   { opacity: 1; }
+			}
+
+			/* Internet Explorer */
+			@-ms-keyframes fadein {
+			    from { opacity: 0; }
+			    to   { opacity: 1; }
+			}
+
+			/* Opera < 12.1 */
+			@-o-keyframes fadein {
+			    from { opacity: 0; }
+			    to   { opacity: 1; }
+			}
+
+
+			h1
+			{
+				font-size: 20pt;
+			}
+			h2
+			{
+				font-size: 18pt;
+			}
+			h3
+			{
+				font-size: 16pt;
+			}
+			h4,h5,h6
+			{
+				font-size: 12pt;
+			}
+			p,a
+			{
+				font-size: 12pt;
+			}
+
+		</style>
+
+		<script type="text/javascript" src="/lib/three.min.js"></script>
+		<script type="text/javascript" src="/lib/TweenMax.min.js"></script>
+		<script type="text/javascript" src="/lib/OrbitControls.js"></script>
+		<script type="text/javascript" src="/lib/jquery.min.js"></script>
+		<script type="text/javascript" src="/lib/jquery.form.js"></script>
+
+		<script src="/socket.io/socket.io.js"></script>
+
+		<script>
+			function openFullscreen()
+			{
+				elem = document.documentElement;
+				if (elem.requestFullscreen) {
+					elem.requestFullscreen();
+				} else if (elem.mozRequestFullScreen) { /* Firefox */
+					elem.mozRequestFullScreen();
+				} else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+					elem.webkitRequestFullscreen();
+				} else if (elem.msRequestFullscreen) { /* IE/Edge */
+					elem.msRequestFullscreen();
+				}
+			}
+
+			window.mobileFormat = function()
+			{
+				var check = false;
+				(function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
+				return check;
+			};
+
+		</script>
+
+	</head>
+<body>
+		<div id="searchRegion" class="searchRegion" style="left:66px">
+			<input id="searchField" type="text" placeholder="Search Holomap"></input>
+			<img id="clearSearchIcon" src="/img/cancel.png"></img>
+		</div> 
+
+
+		<div id="descriptionBox" style="pointer-events:none;"> 
+			<div id="descriptionTitle">
+			</div>
+			<div id="descriptionContent">
+			</div>
+		</div>
+		<div id="annotation">
+			<p id="frequencyText" style="pointer-events:none; font-size: 20pt; padding-bottom: 15px; opacity: 0.5;" ></p>
+			<p id="titleText" style="font-size: 30pt; margin-top: -30px; pointer-events:none;"></p>
+	   </div>
+
+		
+	    <div style="z-index: 5; position:absolute; left: 10px; bottom: 7px; color: #AAAAAA; font-size: 8pt; font-family: archivo_regular, sans-serif;">
+	     	&copy; 2020 Chris Larcombe. <a href="https://github.com/chrislarcombe/holomap-proton/blob/master/LICENSE" target="_new" style="font-size:8pt">Licence</a>. <a href="https://github.com/chrislarcombe/holomap-proton" target="_new" style="font-size:8pt">Source</a>.
+		</div>
+		
+		<div style="position: absolute; left: 15px; top: 15px; z-index: 5;">
+			<div id="navHome" class="navIcon"></div>
+			<div id="navSearch" class="navIcon"></div>
+		</div>
+	</div>
+
+	<script>
+		var container, stats;
+		var camera, scene, renderer, particles, geometry, materials = [], parameters, i, h, color, sprite, size;
+		var mouseX = 0, mouseY = 0;
+
+		var windowHalfX = window.innerWidth / 2;
+		var windowHalfY = window.innerHeight / 2;
+
+		var particleSpheres = {};
+
+		var searchLocked = false;
+
+		init();
+		animate();
+
+		function init()
+		{
+			container = document.createElement( 'div' );
+			document.body.appendChild( container );
+
+			container.onclick = openFullscreen;
+
+			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 20000 );
+			camera.position.z = 1000;
+
+			scene = new THREE.Scene();
+			scene.fog = new THREE.FogExp2( 0x000000, 0.0005 );
+
+			var textureLoader = new THREE.TextureLoader();
+
+			defaultBg = textureLoader.load( "/img/sprites/default.png" );
+			orb = textureLoader.load( "/img/sprites/orb.png" );
+			aura = textureLoader.load( "/img/sprites/aura.png" );
+			dna = textureLoader.load( "/img/sprites/dna.png" );
+			mp3 = textureLoader.load( "/img/sprites/mp3.png" );
+			flake = textureLoader.load( "/img/sprites/snowflake1.png" );
+
+			shell = textureLoader.load( "/img/sprites/shell.png" );
+			ring = textureLoader.load( "/img/sprites/ring.png" );
+
+
+			// params: sprite, total, size, color (hex string without #), radius
+			addFrequency = function(params)
+			{
+				var color  = new THREE.Color(parseInt("0x"+params.color));
+				var sprite = params.sprite;
+				var size = params.size;
+				var total  = params.total;
+				var radius = params.radius;
+				var is2D = params.is2D;
+
+				var geometry = new THREE.Geometry();
+
+				for ( j = 0; j < total; j ++ ) {
+
+					var vertex = new THREE.Vector3();
+
+					var phi = Math.acos( -1 + ( 2 * j ) / total );
+					var theta = Math.sqrt( total * Math.PI ) * phi;
+
+					vertex.x =  Math.cos( theta ) * Math.sin( phi );
+					vertex.y =  Math.sin( theta ) * Math.sin( phi ) ;
+					vertex.z =  Math.cos( phi );
+
+					/*if ( i == 1 )
+					{
+						vertex.x = Math.sin(2*Math.PI*(j/parameters[i][3])) ;
+						vertex.y = 0;
+						vertex.z = Math.cos(2*Math.PI*(j/parameters[i][3])) ;
+					}*/
+
+					vertex.normalize()
+					vertex.multiplyScalar(500 * radius )
+
+					geometry.vertices.push( vertex );
+				}
+
+				var material = new THREE.PointsMaterial( { size: size, map: sprite, blending: THREE.AdditiveBlending, depthTest: false, transparent : true } );
+
+				material.color = color; //.setRGB( color[0], color[1], color[2] );
+
+				var particles = new THREE.Points( geometry, material );
+				scene.add( particles );
+
+				return particles;
+			}
+
+
+			activeAnnotations = [];
+			raycaster = new THREE.Raycaster();
+			mouse = new THREE.Vector2();
+
+			resultsContainer = new THREE.Group;
+			scene.add(resultsContainer);
+			
+			renderer = new THREE.WebGLRenderer({ alpha: true } );
+			renderer.setPixelRatio( window.devicePixelRatio );
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			container.appendChild( renderer.domElement );
+			renderer.setClearColor( 0x000000, 0 ); // the default
+
+
+			window.addEventListener( 'resize', onWindowResize, false );
+
+			controls = new THREE.OrbitControls( camera, renderer.domElement );
+			//controls.addEventListener( 'change', render ); // add this only if there is no animation loop (requestAnimationFrame)
+			controls.enableDamping = true;
+			controls.dampingFactor = 0.25;
+			controls.enableZoom = true;
+			controls.autoRotate = false;
+			controls.autoRotateSpeed = 0.2
+			controls.maxDistance = 900;
+
+			//camera.position.z = 0;
+			//TweenMax.to(camera.position, 1, {z:1000});
+		}
+
+		function onWindowResize() {
+
+			windowHalfX = window.innerWidth / 2;
+			windowHalfY = window.innerHeight / 2;
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+		}
+
+		function animate()
+		{
+			requestAnimationFrame( animate );
+			controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
+
+			var i = 0;
+			for (var type in particleSpheres)
+			{
+				particleSpheres[type].rotation.y +=  3 * (0.0001 + i*0.0001);
+				i++;
+			}
+
+			render();
+		}
+
+		function render()
+		{
+			renderer.render( scene, camera );
+		}
+/* 
+		addFrequency({color:"ff00ff",sprite:orb,size:25,total:70,radius:0.5})
+		addFrequency({color:"ff0000",sprite:orb,size:45,total:50,radius:0.8})
+		addFrequency({color:"ffffff",sprite:aura,size:45,total:100,radius:1.5})
+		addFrequency({color:"0011aa",sprite:orb,size:25,total:1000,radius:1})
+ */
+
+		var ontology = {};
+		var holons = [];
+
+		var url = window.location.href;
+		var urlParts = url.replace('http://','').replace('https://','').split(/[/?#]/);
+		var domain = urlParts[0];
+
+		var host = domain; 
+		var port = "80";
+
+		socket = io(host);
+		socket.on('connect', function()
+		{
+			socket.emit('get_ontology', {withTotals: true});
+		});
+
+		socket.on('receive_holarchy_packet', function(p)
+		{
+			console.log("RX:", p);
+
+			if (!p.h)
+				return;
+
+			var ontChanges = 0;
+
+			for (var i = 0; i < p.h.length; i++)
+			{
+				var h = p.h[i];
+
+				// Holon type
+				if (h._t == "_t" && (h.tid == "_t" || (h.t && h.tid && h.rgb)))
+				{
+
+					var ct = [];
+
+					if (h.ct)
+						if (typeof h.ct == "string")
+							ct = h.ct.split(',');
+						else
+							ct = h.ct;
+
+					ontology[h.tid] = {t: h.t, rgb: h.rgb, ct: ct, cmi: h.cmi, count: h.__count};
+					ontChanges++;
+
+					if (!h.cmi)
+						delete ontology[h.tid].cmi;
+
+					if (h.ae)
+						ontology[h.tid].ae = h.ae;
+
+					if (h.ad)
+						ontology[h.tid].ad = h.ad;
+				}
+			};
+
+			if (ontChanges > 0)
+			{
+				for (var type in ontology)
+				{
+					if (!particleSpheres[type])
+					{
+						if (ontology[type].count > 0)
+						{
+							console.log("Creating particle sphere for", ontology[type].t, ontology[type])
+
+
+						//	addFrequency({color:"ff0000",sprite:orb,size:45,total:50,radius:0.8})
+
+							var hexCol = ontology[type].rgb.split(",").map(function(x){
+								x = parseInt(x).toString(16);
+								return (x.length==1) ? "0"+x : x;
+							}).join("");
+
+
+							console.log(hexCol)
+
+							particleSpheres[type] = addFrequency({color:hexCol,sprite:orb,size:30,total:ontology[type].count,radius: Math.max(0.2, Math.random())  });
+
+
+							particleSpheres[type].rotation.y = Math.random()*Math.PI*2;
+							//particleSpheres[type].rotation.x = Math.random()*Math.PI*2;
+
+						//	particleSpheres[type].rotation.y = Math.random();
+						//	particleSpheres[type].rotation.z = Math.random();
+
+ 
+						}
+					}
+				}
+			}
+		});
+		
+		var currentlySelected = null;
+
+ 		var showDescription = function(f, t, rgb, holon)
+		{
+			document.getElementById('descriptionBox').style['pointer-events'] = "";
+
+			var d = holon.d;
+			var user = holon._u;
+
+			if (currentlySelected == holon._id) return;
+			
+			currentlySelected = holon._id;
+
+			document.getElementById("frequencyText").innerHTML = "~ "+ f;
+
+			if (rgb)
+				document.getElementById("frequencyText").style.color = 'rgba('+ rgb  +', 1)';
+
+
+			var hashtags = "";
+
+			if (holon.tags && holon.tags.length > 0)
+			{
+				for (var j = 0; j < holon.tags.length; j++) {
+					hashtags += "#" + holon.tags[j] + " " ;
+				};
+			}
+
+			document.getElementById("frequencyText").innerHTML += "<div style='color:white; display:inline;margin-left: 10px; opacity: 0.8; font-size: 12pt'>" + hashtags + "</div>"
+			document.getElementById("titleText").innerHTML = t //+ "<br><div style='display:inline; font-size: 12pt;'>by <i>"+user+"</i></div>";
+
+			document.getElementById("annotation").style.display = "none";
+			setTimeout(function()
+			{
+				document.getElementById("annotation").style.display = "block";
+			},100);
+
+			descriptionBox.style.display = "none";
+			descriptionTitle.style.display = "none";
+			descriptionContent.style.display = "none";
+
+			if (holon.urls || (d && t != d))
+			{
+				descriptionTitle.innerHTML = t;
+
+				descriptionTitle.style['background-color'] = 'rgba(' + ontology[holon._t].rgb + ',0.2)';
+
+				var html = "";
+
+				if (holon.urls && holon.urls.length > 0)
+				{
+					//html += "<h4>Linked websites:</h4>";
+					for (var j = 0; j < holon.urls.length; j++) {
+						html += "&rarr;<a href=\"" + holon.urls[j] + "\" target=\"_new\">" + holon.urls[j] + "</a><br>";
+					};
+
+					html += "<br>"
+				}
+
+				descriptionContent.innerHTML = html + d;
+
+				setTimeout(function()
+				{
+					descriptionBox.style.display = "";
+
+					descriptionTitle.style.display = "block";
+					descriptionContent.style.display = "block";
+				},100);
+			}
+
+			if (window.mobileFormat())
+			{
+
+				$("h1").removeAttr("font-size").css("font-size", "14pt")
+				$("h2").removeAttr("font-size").css("font-size", "12pt")
+				$("h3").removeAttr("font-size").css("font-size", "10pt")
+				$("h4").removeAttr("font-size").css("font-size", "8pt")
+				$("h5").removeAttr("font-size").css("font-size", "8pt")
+				$("h6").removeAttr("font-size").css("font-size", "8pt")
+				$("p").removeAttr("font-size").css("font-size", "10pt")
+
+				var box = document.getElementById('descriptionBox');
+				box.style.width = "calc(100% - 20px)";
+				box.style.left = "0px";
+				box.style.top = "60%";
+				box.style.height = "calc(60% - 173px)";
+
+				box.style['background-color'] = 'rgba(0,0,0,0.5)';
+				box.style.padding = "10px";
+				box.style['border-radius'] = "30px";
+
+				descriptionContent.style.padding = "3px";
+
+				var annotation = document.getElementById('annotation');
+
+				annotation.style.left = "15px";
+				annotation.style.bottom = "";
+				annotation.style.top = "70px";
+
+				var ft = document.getElementById('frequencyText');
+				ft.style['font-size'] = "14pt";
+
+				var tt = document.getElementById('titleText');
+				tt.style['font-size'] = "14pt";
+
+				var dt = document.getElementById('descriptionTitle');
+
+				dt.style['font-size'] = "10pt";
+				dt.style['padding'] = "7px";
+				dt.style['padding-left'] = "10px";
+			}
+		}
+		
+		document.getElementById('navHome').onclick = function()
+        {
+			console.log(searchLocked, activeAnnotations)
+
+			if (!searchLocked && activeAnnotations.length > 0)
+			{
+				clearSelection();
+				activeAnnotations = [];
+
+				while (resultsContainer.children.length > 0)
+					resultsContainer.remove(resultsContainer.children[0]);
+
+				for (var type in particleSpheres)
+				{
+					scene.add(particleSpheres[type]);
+
+					TweenMax.to(particleSpheres[type].material, 0.5, {opacity: 1, ease: Power1.easeInOut});
+					TweenMax.to(particleSpheres[type].scale, 0.5, {x:1,y:1,z:1, ease: Power1.easeInOut});
+				}
+			}
+		}
+
+		document.getElementById('navSearch').onclick = function()
+        {
+            if (!document.getElementById('searchRegion').style.visibility || document.getElementById('searchRegion').style.visibility != "visible")
+                document.getElementById('searchRegion').style.visibility = "visible";
+            else
+                document.getElementById('searchRegion').style.visibility = "hidden";
+
+            document.getElementById("searchField").value = "";
+            document.getElementById("searchField").focus();
+		}
+		
+        $("#searchField").keyup(function(event)
+        {
+            if(event.keyCode == 13 && !searchLocked)
+            {
+                document.getElementById('searchRegion').style.visibility = "hidden";
+                socket.emit("search", {searchTerm: document.getElementById("searchField").value});
+                document.getElementById('searchField').value = "";
+            }
+		});
+
+		socket.on('receive_search_results', function(results)
+		{
+			console.log("receive_search_results:", results);
+
+			searchLocked = true;
+
+			holons = {};
+			activeTypes = {};
+
+			for (var i=0; i < results.length; i++)
+			{
+				holons[results[i]._id] = results[i];
+				activeTypes[results[i]._t] = true;
+			}
+
+			if (activeAnnotations.length > 0)
+			{
+				activeAnnotations = [];
+
+				while (resultsContainer.children.length > 0)
+					resultsContainer.remove(resultsContainer.children[0]);
+
+				for (var type in particleSpheres)
+				{
+					if (activeTypes[type])
+					{
+						scene.add(particleSpheres[type]);
+
+						TweenMax.to(particleSpheres[type].material, 0.5, {opacity: 1, ease: Power1.easeInOut});
+						TweenMax.to(particleSpheres[type].scale, 0.5, {x:1,y:1,z:1, ease: Power1.easeInOut});
+					}
+				}
+			}
+
+			for (var i=0; i < results.length; i++)
+				annotateNode(results[i], orb);
+
+			for (var type in particleSpheres)
+			{
+				if (!activeTypes[type])
+				{
+					TweenMax.to(particleSpheres[type].material, 1, {opacity: 0, ease: Power1.easeInOut});
+					TweenMax.to(particleSpheres[type].scale, 1, {x:2,y:2,z:2, ease: Power1.easeInOut});
+				}
+			}
+			
+			setTimeout(function()
+			{
+				for (var type in particleSpheres)
+				{
+					if (activeTypes[type])
+					{
+						TweenMax.to(particleSpheres[type].material, 2, {opacity: 0, ease: Power1.easeInOut});
+					}
+				}
+
+				setTimeout(function()
+				{
+					for (var type in particleSpheres)
+					{
+						scene.remove(particleSpheres[type]);
+
+						while (particleSpheres[type].children.length > 0)
+						{
+							particleSpheres[type].allocation = {};
+
+							console.log("HOLON", o, particleSpheres[type].children.length)
+
+							var point = particleSpheres[type].localToWorld(particleSpheres[type].children[0].position);
+							var coords = [point.x, point.y, point.z];
+							var o = particleSpheres[type].children[0];
+							particleSpheres[type].remove(o);
+							resultsContainer.add(o);
+							o.position.x = coords[0];
+							o.position.y = coords[1];
+							o.position.z = coords[2];
+						}
+					}
+
+					for ( var i = 0, l = resultsContainer.children.length; i < l; i ++ )
+					{
+						var object = resultsContainer.children[ i ];
+						var phi = Math.acos( -1 + ( 2 * i ) / l );
+						var theta = Math.sqrt( l * Math.PI ) * phi;
+						TweenMax.to(object.position, 0.75, {
+							x: 400 * Math.cos( theta ) * Math.sin( phi ),
+							y: 400 * Math.sin( theta ) * Math.sin( phi ),
+							z: 400 * Math.cos( phi ),
+							ease: Power1.easeInOut
+						});
+
+						TweenMax.to(object.shell.material, 1, {opacity: 1, ease: Power1.easeInOut});
+					}
+
+					searchLocked = false;
+
+				}, 2111);
+			}, 1000);
+
+			console.log("SEARCH RESULT", holons)
+		});
+
+		function shuffleArray(array) {
+			for (var i = array.length - 1; i > 0; i--) {
+				var j = Math.floor(Math.random() * (i + 1));
+				var temp = array[i];
+				array[i] = array[j];
+				array[j] = temp;
+			}
+		}
+
+		function annotateNode(n, sprite, isSelectedSprite)
+		{
+			
+			var type = n._t;
+
+			if (!particleSpheres[type])
+				return;
+				
+
+			var annotation = makeHolonObject({t: n.t, col: ontology[type].rgb}, shell, 300);
+			annotation._id = n._id;
+			annotation.t = n.t;
+
+			activeAnnotations.push(annotation);
+
+			if (!particleSpheres[type].allocation)
+				particleSpheres[type].allocation = {}
+			if (!particleSpheres[type].allocation[n._id])
+			{
+				var chooseFrom = [];
+
+				for (var i=0; i<particleSpheres[type].geometry.vertices.length; i++)
+					chooseFrom.push(i);
+				
+				shuffleArray(chooseFrom);
+
+				for (var id in particleSpheres[type].allocation)
+					chooseFrom.splice(chooseFrom.indexOf(particleSpheres[type].allocation[id]), 1)
+
+				particleSpheres[type].allocation[n._id] = chooseFrom[0];
+			}
+
+			var alloc = particleSpheres[type].allocation[n._id];
+
+			annotation.position.x = particleSpheres[type].geometry.vertices[alloc].x;
+			annotation.position.y = particleSpheres[type].geometry.vertices[alloc].y;
+			annotation.position.z = particleSpheres[type].geometry.vertices[alloc].z;
+
+			particleSpheres[type].add(annotation);
+
+			return annotation;
+		}
+
+		function moveOut()
+		{
+			var point = particleSpheres['profile'].localToWorld(particleSpheres['profile'].children[0].position);
+			var coords = [point.x, point.y, point.z];
+			var o = particleSpheres['profile'].children[0];
+			particleSpheres['profile'].remove(o);
+			scene.add(o);
+			o.position.x = coords[0];
+			o.position.y = coords[1];
+			o.position.z = coords[2];
+		}
+
+		function makeHolonObject(h, sprite, scale) 
+		{
+			if (!scale)
+				scale = 100;
+
+			var holon = new THREE.Group;
+			holon.t = h.t;
+			holon._id = h._id;
+
+			var spriteMaterialRing = new THREE.SpriteMaterial( 
+				{ map: ring, useScreenCoordinates: false } );
+			var holonRing = new THREE.Sprite( spriteMaterialRing );
+			var rgb = h.col.split(",");
+			spriteMaterialRing.color.r = parseInt(rgb[0])/255;
+			spriteMaterialRing.color.g = parseInt(rgb[1])/255;
+			spriteMaterialRing.color.b = parseInt(rgb[2])/255;
+			holonRing.scale.set(scale*2,scale*2,scale*2);
+			TweenMax.to(holonRing.scale, 0.5, {x: scale, y: scale, z: scale, ease: Power1.easeInOut})
+			holon.add(holonRing)
+			holon.ring = holonRing;
+
+			var spriteMaterial = new THREE.SpriteMaterial( 
+				{ map: sprite, useScreenCoordinates: false } );
+			var holonSprite = new THREE.Sprite( spriteMaterial );
+			var rgb = h.col.split(",");
+			spriteMaterial.color.r = parseInt(rgb[0])/255;
+			spriteMaterial.color.g = parseInt(rgb[1])/255;
+			spriteMaterial.color.b = parseInt(rgb[2])/255;
+			holonSprite.scale.set(scale,scale,scale);
+			holonSprite.material.opacity = 0;
+			holon.add(holonSprite)
+			holon.shell = holonSprite;
+
+
+			var spriteMaterial2 = new THREE.SpriteMaterial( 
+				{ map: defaultBg,useScreenCoordinates: false } );
+			var holonSprite2 = new THREE.Sprite( spriteMaterial2 );
+			spriteMaterial2.color.r = parseInt(rgb[0])/255;
+			spriteMaterial2.color.g = parseInt(rgb[1])/255;
+			spriteMaterial2.color.b = parseInt(rgb[2])/255;
+			var sf = 5;
+			holonSprite2.scale.set(1,1,1);
+			TweenMax.to(holonSprite2.scale, 5, {x: scale/sf, y: scale/sf, z: scale/sf, ease: Power1.easeInOut})
+			holon.add(holonSprite2)
+
+
+			var textSprite = makeTextSprite( h.t, 
+				{ fontsize: 24, borderColor: {r:0, g:0, b:0, a:0}, backgroundColor: {r:0, g:0, b:0, a:0.5} } );
+
+			textSprite.position.set(0,0,0); // ?? necessary
+			holon.add( textSprite );
+			return holon;
+		}
+
+		function makeTextSprite( message, parameters )
+		{
+			if ( parameters === undefined ) parameters = {};
+			
+			var fontface = parameters.hasOwnProperty("fontface") ? 
+				parameters["fontface"] : "archivo_regular";
+			
+			var fontsize = parameters.hasOwnProperty("fontsize") ? 
+				parameters["fontsize"] : 18;
+			
+			var borderThickness = parameters.hasOwnProperty("borderThickness") ? 
+				parameters["borderThickness"] : 4;
+			
+			var borderColor = parameters.hasOwnProperty("borderColor") ?
+				parameters["borderColor"] : { r:0, g:0, b:255, a:0.8 };
+			
+			var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
+				parameters["backgroundColor"] : { r:0, g:0, b:0, a:0.5 };
+
+			//var spriteAlignment = THREE.SpriteAlignment.topLeft;
+				
+			var canvas = document.createElement('canvas');
+			var context = canvas.getContext('2d');
+			context.font = "Bold " + fontsize + "px " + fontface;
+			
+			// get size data (height depends only on font size)
+			var metrics = context.measureText( message );
+			var textWidth = metrics.width;
+			
+			// background color
+			context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
+											+ backgroundColor.b + "," + backgroundColor.a + ")";
+			// border color
+			context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
+											+ borderColor.b + "," + borderColor.a + ")";
+
+			context.lineWidth = borderThickness;
+			context.padding = 5;
+
+			roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
+			// 1.4 is extra height factor for text below baseline: g,j,p,q.
+			
+			// text color
+			context.fillStyle = "rgba(255,255,255,1)";
+
+			context.fillText( message, borderThickness, fontsize + borderThickness);
+			
+			// canvas contents will be used for a texture
+			var texture = new THREE.Texture(canvas) 
+			texture.needsUpdate = true;
+
+			var spriteMaterial = new THREE.SpriteMaterial( 
+				{ map: texture, useScreenCoordinates: false } );
+			var sprite = new THREE.Sprite( spriteMaterial );
+			sprite.scale.set(200,100,1.0);
+			sprite.textWidth = textWidth;
+			return sprite;	
+		}
+
+		// function for drawing rounded rectangles
+		function roundRect(ctx, x, y, w, h, r) 
+		{
+			ctx.beginPath();
+			ctx.moveTo(x+r, y);
+			ctx.lineTo(x+w-r, y);
+			ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+			ctx.lineTo(x+w, y+h-r);
+			ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+			ctx.lineTo(x+r, y+h);
+			ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+			ctx.lineTo(x, y+r);
+			ctx.quadraticCurveTo(x, y, x+r, y);
+			ctx.closePath();
+			ctx.fill();
+			ctx.stroke();   
+		}
+
+		container.addEventListener('mousedown', function(e)
+		{
+			mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
+			mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
+
+			raycaster.setFromCamera( mouse, camera );
+
+			// calculate objects intersecting the picking ray
+			var intersects = raycaster.intersectObjects( activeAnnotations, true );
+
+			var nothingClicked = true;
+
+			for (var i = 0; i < intersects.length; i++ )
+			{
+				var h = holons[intersects[i].object.parent._id];
+				if (h)
+				{
+					showDescription(ontology[h._t].t, h.t, ontology[h._t].rgb, h);
+					nothingClicked = false;
+				}
+
+				break;
+			}
+
+			if (nothingClicked)
+			{
+				clearSelection();
+			}
+		}, false);
+		
+		function clearSelection()
+		{
+			currentlySelected = null;
+			annotation.style.display = "none";
+			descriptionBox.style.display = "none";
+			descriptionTitle.style.display = "none";
+			descriptionContent.style.display = "none";
+			document.getElementById('descriptionBox').style['pointer-events'] = "none";
+		}
+
+	</script>
+</body>
+</html>

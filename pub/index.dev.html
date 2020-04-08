@@ -125,10 +125,20 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	    </div>
 
 	    <div id="addressIndicator">
-	    </div>
+		</div>
+		
+		<div style="position: absolute; left: 10px; bottom: 30px; z-index: 5;">
+			<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_new">
+				<input type="hidden" name="cmd" value="_s-xclick" />
+				<input type="hidden" name="hosted_button_id" value="8BX8R2FKTWUDJ" />
+				<input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+				<img alt="" border="0" src="https://www.paypal.com/en_GB/i/scr/pixel.gif" width="1" height="1" />
+				<div style="display:inline; color:white" ><h5>Please donate to improve this map.</h5></div>
+			</form>
+		</div>
 
 	    <div style="z-index: 5; position:absolute; left: 10px; bottom: 7px; color: #AAAAAA; font-size: 8pt; font-family: archivo_regular, sans-serif;">
-	     	&copy; 2020 Chris Larcombe. <a href="https://github.com/chrislarcombe/holomap-proton/blob/master/LICENSE" target="_new">Licence</a>. <a href="https://github.com/chrislarcombe/holomap-proton" target="_new">Source</a>.
+	     	&copy; 2020 <a href="https://larcombe.io" target="_new" style="font-weight: normal; color: #aaaaaa;">Chris Larcombe.</a> <a href="https://github.com/chrislarcombe/holomap-proton" target="_new">Source</a>.
 		</div>
 		
 		<div style="position: absolute; left: 15px; top: 15px; z-index: 5;">

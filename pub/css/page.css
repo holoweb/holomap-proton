@@ -317,7 +317,7 @@ hr
 		overflow-y: auto;
 		padding-left: 10px;
 		float: top;
-		width: 100%;
+		width: calc(100% - 10px);
 		height: calc(60% - 11px);
 	}
 

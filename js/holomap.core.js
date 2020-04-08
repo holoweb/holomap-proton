@@ -349,12 +349,30 @@ HolomapCore = (function()
 		});
 	}
 
-	HolomapCore.prototype.send_ontology = function(socket, hubName)
+	HolomapCore.prototype.send_ontology = function(socket, request)
 	{
 		store.get_nodes({'n._t': "_t", 'n._nl': {$ne: true} }, function(hns)
 		{
 			// Send to user 
-			socket.emit('receive_holarchy_packet', {h: hns});
+			if (request && request.withTotals)
+			{
+				var getNextTotal = function(i, holons)
+				{
+					store.count({'n._t': holons[i].tid}, function(res)
+					{
+						holons[i].__count = res;
+						if (i == holons.length - 1)
+							socket.emit('receive_holarchy_packet', {h: holons});
+						else
+							getNextTotal(i+1, holons)
+					});
+				}
+				getNextTotal(0, hns);
+			}
+			else
+			{
+				socket.emit('receive_holarchy_packet', {h: hns});
+			}
 		});
 	}
 
