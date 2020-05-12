@@ -629,21 +629,31 @@ textarea
     color: white;
 }
 
-input, input[type="text"]
+input
 {
 	font-family: archivo_regular, sans-serif;
 	font-size: 12pt;
 	padding: 5px;
-		border-radius: 10px;
-
-    outline-width: 0;
-
-    border: 1px #AAAAAA solid;;
-
-    height: 30px;
-
 }
 
+input[type="text"]
+{
+	font-family: archivo_regular, sans-serif;
+	font-size: 12pt;
+	padding: 15px;
+	border-radius: 10px;
+    outline-width: 0;
+    border: 1px #555555 solid;;
+	height: 30px;
+	color: white;
+	background: black;
+}
+
+#saveContentButton
+{
+	color: red;
+	border: 1px solid red;
+}
 
 #addressIndicator
 {
@@ -682,6 +692,17 @@ input, input[type="text"]
 	font-size: 9pt;
 }
 
+.ql-toolbar.ql-snow
+{
+	border: none;
+}
+.ql-container.ql-snow
+{
+	border: none;
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+}
+
 .miniButton
 {
 
@@ -695,8 +716,9 @@ input, input[type="text"]
 	border-radius: 27px;
 
 	font-family: archivo_semibold, sans-serif;
-	font-size: 9pt;
-	color: purple;
+	font-weight: bold;
+	font-size: 10pt;
+	color: black;
 
 	line-height: 10px;
 

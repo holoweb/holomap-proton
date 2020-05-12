@@ -795,6 +795,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 for (var j = 0; j < holon.urls.length; j++) {
                     html += "&rarr;<a href=\"" + holon.urls[j] + "\" target=\"_new\">" + holon.urls[j] + "</a><br>";
                 };
+                html += "<br>"
             }
 
             if (holon.vids && holon.vids.length > 0)
@@ -1130,8 +1131,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         var html = "";
         var attributes = BROWSER.getAttributes();
 
-        html += "<p align='center'> <input id='saveContentButton' type='button' value='Save Changes' class='saveContentButton'></input> </p>";
-        html += '<p><form id="backgroundImageUploadForm" enctype="multipart/form-data" action="/img/user" method="post"><span>Background:</span><input type="file" id="userPhotoInput" name="userPhoto" class="button" style="margin: 5px; width: 250px" class="inputButton"/></form><p id="fileUploadStatus"></p></p>';
+        html += "<p align='center' style='margin-bottom:20px'><br><input id='saveContentButton' type='button' value='Save Changes' class='saveContentButton'></input></p>";
+        html += '<form id="backgroundImageUploadForm" enctype="multipart/form-data" action="/img/user" method="post"><span>Holon background:</span><input type="file" id="userPhotoInput" name="userPhoto" class="button" style="margin: 5px; font-size: 10pt; padding: 5px; background: black; color: white;" class="inputButton"/></form>';
         html += "<form action='javascript:'>";
 
         if (holon && attributes)
@@ -1156,7 +1157,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                     }
                     else if (ae[i] == "d")
                     {
-                        html += '<textarea id="myTextarea" style="width:97%"></textarea>';
+                        html += '<div id="editor-container" style="height:400px"></div>';
                     }
                     else
                     {
@@ -1169,12 +1170,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         html += "<p><h3>Hashtags</h3><input id='attr_tags' style='width:98%' type='text' placeholder='Enter tags separated by commas'></input></p>"
         html += "<p><h3>Website Links (URLs):</h3><div id='urlArea'></div></p>";
         html += "<p><h3>YouTube Videos:</h3><div id='vidsArea'></div></p>";
-        html += "<p align='center'> <input id='saveContentButton' type='submit' value='Save Changes' class='saveContentButton'></input> </p>";
+        html += "<br><p align='center'> <input id='saveContentButton' type='submit' value='Save Changes' class='saveContentButton'></input> </p>";
         html += "</form>";
 
         document.getElementById('infoPanelInfoContentAttributes').innerHTML = html;
-
-        currentHolonDescription = "";
 
         updateURLArea(holon);
         updateVidsArea(holon);
@@ -1200,41 +1199,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 if (holon.tags && holon.tags.length > 0 && ae[i] == "tags" && typeof holon.tags == "object")
                     document.getElementById('attr_tags').value = holon.tags.join(', ');
 
-                if (ae[i] == "d")
-                    currentHolonDescription = holon[ae[i]];
-
-                if (ae[i] == "d" && tinymce && tinymce.editors.length == 1)
-                {
-                    var d = holon[ae[i]];
-                    if (!d)
-                        d = "";
-                }
-                    
+                if (ae[i] == "d" && holon[ae[i]])
+                    document.getElementById('editor-container').innerHTML = holon[ae[i]];
             };
         }
 
-        if (tinymce)
-        {
-            if (tinymce.editors && tinymce.editors.length > 0)
-                tinymce.editors[0].destroy()
-
-            tinymce.init({
-                selector: '#myTextarea',
-                theme: 'modern',
-                plugins: [
-                  'autoresize advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker',
-                  'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
-                  'save table contextmenu directionality emoticons template paste textcolor'
-                ],
-                toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons',
-                setup: function (editor) {
-                editor.on('init', function (e) {
-                  console.log('Editor was initialized.');
-                    if (currentHolonDescription) editor.setContent(currentHolonDescription)
-                });
-                }
-              });
-        }
+        var quill = new Quill('#editor-container', {
+            modules: {
+              toolbar: [
+                [{ header: [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline'],
+                ['image', 'code-block']
+              ]
+            },
+            placeholder: 'Holon description',
+            theme: 'snow'  // or 'bubble'
+        });
 
         var timerId = setInterval(function() {;
         if($('#userPhotoInput').val() !== '') {
@@ -1372,9 +1352,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 else
                 {
 
-                    if (ae[i] == "d" && tinymce.editors.length == 1)
+                    if (ae[i] == "d")
                     {
-                        var htmlContent = tinymce.editors[0].getContent();
+                        var htmlContent = document.getElementById('editor-container').children[0].innerHTML;
 
                         holon[ae[i]] = htmlContent;
                         attr[ae[i]] = htmlContent;
