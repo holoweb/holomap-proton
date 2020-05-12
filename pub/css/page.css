@@ -702,6 +702,10 @@ input[type="text"]
     background: rgba(255,255,255,0.1);
     border-radius: 20px;
 }
+.ql-editor.ql-blank::before
+{
+	color: #aaaaaa;
+}
 
 .miniButton
 {

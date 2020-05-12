@@ -100,7 +100,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         };
 
         // Defaults (primary; hard-coded only for now)
-        attributes = {t: {t: "Title", d: "<h3>$.$</h3>", e: "<h3>Title:</h3><input id='attr_t' type='text' style='width:100%;' placeholder='Enter a title for the holon'></input>"},
+        attributes = {t: {t: "Title", d: "<h3>$.$</h3>", e: "<input id='attr_t' type='text' style='width:100%;' placeholder='Enter title'></input>"},
                     d: {t: "Description", d: "$.$", e: "<h3>Additional information:</h3> <textarea id='attr_d' style='width:98%; height:100px' placeholder='Describe the holon in more detail here (optional)'></textarea>"},
                     asct: {t: "Access-condition type", d: "<div class='accessConditionBox'><b>Access-condition:</b> $.$</div>", e: "<h3>Access-condition:</h3> <select id='attr_asct'><option>Free (unconditional)</option><option>Exchange</option><option>Borrow</option><option>For sale (auction)</option><option>For sale (fixed price)</option></select>"},
                     asc: {t: "Access-condition", d: "<div class='accessConditionDetailsBox'>$.$</div>", e: "Details: <input id='attr_asc' class='textField' type='text' style='width:50%' placeholder='Price, condition, notes, etc.'></input>"},

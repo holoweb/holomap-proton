@@ -1066,10 +1066,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             for (var i = 0; i < holon.urls.length; i++)
             {
                 var v = holon.urls[i];
-                html += "<input id='url" + i + "' type='text' style='width:80%;' placeholder='Enter URL' value='" + v + "'></input> &nbsp; <input type='button' value='delete' class='miniButton' onclick='javascript:deleteUrl("+i+")'></input><br><br>";
+                html += "<input id='url" + i + "' type='text' style='width:80%;' placeholder='Enter URL' value='" + v + "'></input> &nbsp; <input type='button' value='delete' class='miniButton' onclick='javascript:deleteUrl("+i+")'></input><br>";
             };
         }
-        html += "<input id='addLinkButton' type='button' value=' + ' class='miniButton' style='width:24px'></input> &larr; <i>click to add a link</i>";
+        html += "<input id='addLinkButton' type='button' value=' + ' class='miniButton' style='width:24px'></input> &larr; <i>click to add a link</i><br><br>";
 
         document.getElementById('urlArea').innerHTML = html;
 
@@ -1167,9 +1167,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             };
         }
 
-        html += "<p><h3>Hashtags</h3><input id='attr_tags' style='width:98%' type='text' placeholder='Enter tags separated by commas'></input></p>"
-        html += "<p><h3>Website Links (URLs):</h3><div id='urlArea'></div></p>";
-        html += "<p><h3>YouTube Videos:</h3><div id='vidsArea'></div></p>";
+        html += "<br><p><h4>Hashtags</h4><input id='attr_tags' style='width:98%' type='text' placeholder='Enter tags separated by commas'></input></p>"
+        html += "<p><h4>Links (URLs):</h4><div id='urlArea'></div></p>";
+        html += "<p><h4>YouTube Videos:</h4><div id='vidsArea'></div></p>";
         html += "<br><p align='center'> <input id='saveContentButton' type='submit' value='Save Changes' class='saveContentButton'></input> </p>";
         html += "</form>";
 
@@ -1212,7 +1212,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 ['image', 'code-block']
               ]
             },
-            placeholder: 'Holon description',
+            placeholder: 'Enter description',
             theme: 'snow'  // or 'bubble'
         });
 
