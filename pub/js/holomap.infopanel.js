@@ -1132,7 +1132,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         var attributes = BROWSER.getAttributes();
 
         html += "<p align='center' style='margin-bottom:20px'><br><input id='saveContentButton' type='button' value='Save Changes' class='saveContentButton'></input></p>";
-        html += '<form id="backgroundImageUploadForm" enctype="multipart/form-data" action="/img/user" method="post"><span>Holon background:</span><input type="file" id="userPhotoInput" name="userPhoto" class="button" style="margin: 5px; font-size: 10pt; padding: 5px; background: black; color: white;" class="inputButton"/></form>';
+        html += '<form id="backgroundImageUploadForm" enctype="multipart/form-data" action="/img/user" method="post"><span>Holon background:</span><input type="file" id="userPhotoInput" name="userPhoto" class="button" style="margin: 5px; font-size: 10pt; padding: 5px; background: rgba(0,0,0,0); color: white;" class="inputButton"/></form>';
         html += "<form action='javascript:'>";
 
         if (holon && attributes)
