@@ -648,7 +648,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
         if (!t)
         	t = "";
-		holonTitle.setText(t.substr(0,100)+dots);
+		holonTitle.setText(t.substr(0,60)+dots);
 	}
 
 	var setHolonImageInteraction = function(h)
