@@ -61,8 +61,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             // Request ontology
             CORELINK.emit('get_ontology');
 
-            // Request home holon
-            getHolarchyByAddress("map.home")
+            // Load home holon
+            var domainInfo = location.hostname.split('.');
+            if (domainInfo.length == 3)
+                getHolarchyByAddress("map."+domainInfo[0])
+            else
+                getHolarchyByAddress("map.home")
         }); 
 
         $("#searchField").keyup(function(event){
