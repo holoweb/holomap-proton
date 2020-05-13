@@ -53,7 +53,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         defaultTabContent = new Object();
         showComment = null;
 
-        defaultTabContent['content'] = '<div id="infoPanelInfoContentControls"><div style="display:none">Slide <big>1</big> of <big>1</big></div><div id="infoPanelInfoEditButton"><img src="/img/edit.png"></img></div><div id="infoPanelInfoSettingsButton"><img src="/img/settings.png"></img></div></div><div id="infoPanelInfoContent"><div id="infoPanelInfoContentAttributes"></div><div class="resizeMe2"><div id="infoPanelInfoCommentsSeparator"><a href="javascript:minMaxCommentsAndCocreation();" style="color:white;">Co-mapping and Comments</a></div><div id="infoPanelInfoContentComments" ></div></div></div>';
+        defaultTabContent['content'] = '<div id="infoPanelInfoContentControls"><div style="display:none">Slide <big>1</big> of <big>1</big></div><div id="infoPanelInfoEditButton"><img src="/img/edit.png"></img></div><div id="infoPanelInfoSettingsButton"><img src="/img/settings.png"></img></div></div><div id="infoPanelInfoContent"><div id="infoPanelInfoContentAttributes"></div><div class="resizeMe2"><div id="infoPanelInfoCommentsSeparator"><a href="javascript:minMaxCommentsAndCocreation();" style="color:white;">Social</a></div><div id="infoPanelInfoContentComments" ></div></div></div>';
         INFOPANEL.loadTab('content');
 
         // Require modules

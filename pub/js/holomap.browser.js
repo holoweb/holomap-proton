@@ -30,6 +30,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
     var keepInCache = {};
     var ontology;
     var attributes;
+    var thisMap = null;
     
     BROWSER.geom = { headerSize: 48, navbarSize: 92};
     BROWSER.profileHolonId = null;
@@ -64,9 +65,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             // Load home holon
             var domainInfo = location.hostname.split('.');
             if (domainInfo.length == 3)
-                getHolarchyByAddress("map."+domainInfo[0])
+            {
+                thisMap = domainInfo[0];
+                getHolarchyByAddress("map."+thisMap)
+            }
             else
+            {
                 getHolarchyByAddress("map.home")
+            }
         }); 
 
         $("#searchField").keyup(function(event){
@@ -160,7 +166,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
         document.getElementById('navHome').onclick = function()
         {
-            getHolarchyByAddress("map.home");
+            if (thisMap)
+                getHolarchyByAddress("map."+thisMap);
+            else
+                getHolarchyByAddress("map.home");
         }
 
         document.getElementById('navProfile').onclick = function()
