@@ -63,7 +63,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             CORELINK.emit('get_ontology');
 
             // Load home holon
-            var domainInfo = location.hostname.split('.');
+            var domainInfo = location.hostname.replace("www.","").split('.');
             if (domainInfo.length == 3)
             {
                 thisMap = domainInfo[0];
