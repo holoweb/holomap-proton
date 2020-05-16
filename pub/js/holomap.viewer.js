@@ -2282,6 +2282,9 @@ swal("Type Change Error", "Unknown type. The type ID was not found in the ontolo
 		if (!mouseInViewer(e.clientX, e.clientY))
 			return;
 
+		if (document.getElementById("cropArea").style.visibility == "visible")
+			return;
+
 		// Up / Bigger
 		if (e.wheelDelta > 0)
 		{

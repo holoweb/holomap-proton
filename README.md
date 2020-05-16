@@ -4,11 +4,7 @@ Holomap is a real-time collaborative holonic mapping platform.
 
 [this documentation will be updated soon]
 
-Dependencies: *imagemagick*
-
 ## Installation
-`sudo apt install imagemagick`
-
 `./install.sh`
 
 ## Dev Server

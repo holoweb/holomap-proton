@@ -28,6 +28,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		<link rel="stylesheet" type="text/css" href="/css/bootstrap-combined.no-icons.min.css">
 		<link rel="stylesheet" type="text/css" href="/css/page.css"/>
 		<link rel="stylesheet" type="text/css" href="/css/skin.css"/>
+		<link rel="stylesheet" href="/css/croppie.css" />
+    
 
 		<script src="/lib/sweetalert.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="/css/sweetalert.css">
@@ -46,7 +48,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		<link rel="stylesheet" type="text/css" href="/css/bootstrap-datepicker.css" />
 		<script src="/lib/datepair.js"></script>
 		<script src="/lib/jquery.datepair.js"></script>
-
+		<script src="/lib/croppie.js"></script>
 		<script src="/lib/quill.js"></script>
 
 		<script type='text/javascript' src="/lib/bootstrap-typeahead.js"></script>
@@ -54,7 +56,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		<script data-main="holomap" src="/lib/require.js"></script>
 
 	</head>
-<body >
+<body>
+		<div id="cropArea">
+			<div id='vanilla-demo'></div> 
+			<input id='cropCancelButton' type="button" value="X" onclick="cancelCrop()"></input>
+			<input id='cropButton' type="button" value="Crop" onclick="doCrop()"></input>
+		</div>
+
 		<div id="loginPopup" class="loginPopup">
 			<a id="closeLoginPopup" href="#" class="close"><img src="/img/close.png" class="btn_close" title="Close Window" alt="Close" /></a>
 			<h2>Login to Holomap Proton</h2>

@@ -173,6 +173,35 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 updateVidsArea(currentHolon);
             }
         }
+
+        // Cropping
+
+        var el = document.getElementById('vanilla-demo');
+		vanilla = new Croppie(el, {
+			viewport: { width: 444, height: 444, type:"circle" },
+			boundary: { width: 600, height: 600 },
+			showZoomer: false
+		});
+
+		resizeAndUpload = function(file)
+		{
+			document.getElementById("cropArea").style.visibility = "visible";
+			var reader = new FileReader();
+			reader.onloadend = function()
+			{
+				var tempImg = new Image();
+				tempImg.src = reader.result;
+				tempImg.onload = function()
+				{
+					vanilla.bind({
+						url: tempImg.src,
+						orientation: 4
+					});
+				}
+		   }
+		   reader.readAsDataURL(file);
+        }
+        
     }
 
     var updateHolonUrlsVar = function()
@@ -1132,7 +1161,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         var attributes = BROWSER.getAttributes();
 
         html += "<p align='center' style='margin-bottom:20px'><br><input id='saveContentButton' type='button' value='Save Changes' class='saveContentButton'></input></p>";
-        html += '<form id="backgroundImageUploadForm" enctype="multipart/form-data" action="/img/user" method="post"><span>Holon background:</span><input type="file" id="userPhotoInput" name="userPhoto" class="button" style="margin: 5px; font-size: 10pt; padding: 5px; background: rgba(0,0,0,0); color: white;" class="inputButton"/></form>';
+        html += '<span>Holon background:</span><input type="file" id="userPhotoInput" name="userPhoto" class="button" style="margin: 5px; font-size: 10pt; padding: 5px; background: rgba(0,0,0,0); color: white;" class="inputButton"/>';
+
+        
 
 
         if (['map','prep','profile'].indexOf(holon._t) == -1)
@@ -1188,6 +1219,51 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
         document.getElementById('infoPanelInfoContentAttributes').innerHTML = html;
 
+        cancelCrop = function()
+        {
+            document.getElementById("cropArea").style.visibility = "hidden";
+        }
+
+        doCrop = function()
+		{
+            vanilla.result('blob', 'viewport', 'png', 1, true).then(function(blob)
+            {
+				var formData = new FormData();
+				formData.append("userPhoto", blob);
+		
+				var request = new XMLHttpRequest();
+				request.onload = function(e)
+				{
+                    document.getElementById("cropArea").style.visibility = "hidden";
+                };
+                
+                request.onreadystatechange = function()
+                {
+                    if (request.readyState == XMLHttpRequest.DONE)
+                    {
+                        var response = JSON.parse(request.responseText);
+                        holon._b = response.path;
+                        VIEWER.updateHolonBackground(holon);
+                        if (holon._t == 'profile')
+                            CORELINK.emit('change_holon', { avatar: true, h: {_id: holon._id, _b: response.path } } );
+                        else
+                            CORELINK.emit('change_holon', { h: {_id: holon._id, _b: response.path } } );
+                    }
+                }
+		
+				request.open("POST", "/img/user");
+				request.send(formData);
+			});
+        }
+        
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+            document.getElementById('userPhotoInput').onchange = function(){
+                resizeAndUpload(document.getElementById('userPhotoInput').files[0]);
+            };
+        } else {
+            alert('The File APIs are not fully supported in this browser.');
+        }
+
         updateURLArea(holon);
         updateVidsArea(holon);
 
@@ -1233,48 +1309,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             placeholder: 'Enter description',
             theme: 'snow'  // or 'bubble'
         });
-
-        var timerId = setInterval(function() {;
-        if($('#userPhotoInput').val() !== '') {
-                clearInterval(timerId);
-        
-                $('#backgroundImageUploadForm').submit();
-            }
-        }, 500);
-        
-        
-        $('#backgroundImageUploadForm').submit(function()
-        {
-            $(this).ajaxSubmit(
-            {
-                error: function(xhr)
-                {
-                    alert("Unable to upload file.");
-                    document.getElementById('userPhotoInput').disabled = true;
-                },
-             
-                success: function(response)
-                {
-                    if (response.error)
-                    {
-                        alert("Unable to upload file! Error: "+response.error);
-                    }
-                    else
-                    {
-                        holon._b = response.path;
-
-                        VIEWER.updateHolonBackground(holon);
-
-                        if (holon._t == 'profile')
-                            CORELINK.emit('change_holon', { avatar: true, h: {_id: holon._id, _b: response.path } } );
-                        else
-                            CORELINK.emit('change_holon', { h: {_id: holon._id, _b: response.path } } );
-                    }
-                }
-            });
-        return false;
-        });
-
 
         $('.saveContentButton').click(function()
         {
