@@ -2,7 +2,7 @@
 
 Holomap is a real-time collaborative holonic mapping platform.
 
-[this documentation will be updated soon]
+Latest update: image processing (cropping) now done in browser!
 
 ## Installation
 `./install.sh`
