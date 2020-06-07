@@ -94,20 +94,16 @@ var cpUpload = upload.fields([{ name: 'userPhoto', maxCount: 1 }])
 app.post('/img/user', cpUpload, function(req, res)
 {
 	var serverPath = req.files.userPhoto[0].path;
-	var im = require('imagemagick');
+	var targetFilename = "./pub/img/user/"+req.files.userPhoto[0].filename+".png";
+
 	var fs = require('fs');
 
-	im.convert([req.files.userPhoto[0].filename, '-resize', '444x444\!', './pub/img/mask.jpg', '-alpha', 'Off', '-compose', 'CopyOpacity', '-composite', "./pub/img/user/"+req.files.userPhoto[0].filename+".png"],
-	function(err, stdout)
-	{
-	  if (err) throw err;
-	  res.send({
+	fs.rename(serverPath, targetFilename, function (err) {
+	if (err) throw err
+	})
+
+	res.send({
 		path: serverPath+".png"
-	  });
-	  
-	  fs.unlink(serverPath, function(err) {
-		if (err) throw err;
-	  })
 	});
 });
 
