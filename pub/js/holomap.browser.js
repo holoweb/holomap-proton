@@ -64,15 +64,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
             // Load home holon
             var domainInfo = location.hostname.replace("www.","").split('.');
-            if (domainInfo.length == 3)
-            {
-                thisMap = domainInfo[0];
+            thisMap = domainInfo[0];
+
+            var hAddress = location.href.replace(origin+'/','').match(/^([a-z0-9]+)\.([a-z0-9]+)$/i);
+
+            if (hAddress)
+                getHolarchyByAddress(hAddress[1]+'.'+hAddress[2]);
+            else if (domainInfo.length == 3)
                 getHolarchyByAddress("map."+thisMap)
-            }
             else
-            {
                 getHolarchyByAddress("map.home")
-            }
         }); 
 
         $("#searchField").keyup(function(event){
