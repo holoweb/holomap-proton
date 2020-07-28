@@ -51,7 +51,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         resetCache();
 
         // Initialise modules
-        _INFOPANEL.init(VIEWER, BROWSER, _CORELINK); 
+        if (!EMBEDDED)
+            _INFOPANEL.init(VIEWER, BROWSER, _CORELINK); 
         _VIEWER.init(BROWSER, _CORELINK, _INFOPANEL); // Set up stage
 
         _CORELINK.init(BROWSER, function()
@@ -166,33 +167,36 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             }
         }
 
-        document.getElementById('navHome').onclick = function()
+        if (!EMBEDDED)
         {
-            if (thisMap)
-                getHolarchyByAddress("map."+thisMap);
-            else
-                getHolarchyByAddress("map.home");
-        }
+            document.getElementById('navHome').onclick = function()
+            {
+                if (thisMap)
+                    getHolarchyByAddress("map."+thisMap);
+                else
+                    getHolarchyByAddress("map.home");
+            }
 
-        document.getElementById('navProfile').onclick = function()
-        {
-            getHolarchyByAddress("profile."+BROWSER.username);
-        }
+            document.getElementById('navProfile').onclick = function()
+            {
+                getHolarchyByAddress("profile."+BROWSER.username);
+            }
 
-        document.getElementById('navPrep').onclick = function()
-        {
-            getHolarchyByAddress("prep."+BROWSER.username);
-        }
+            document.getElementById('navPrep').onclick = function()
+            {
+                getHolarchyByAddress("prep."+BROWSER.username);
+            }
 
-        document.getElementById('navSearch').onclick = function()
-        {
-            if (!document.getElementById('searchRegion').style.visibility || document.getElementById('searchRegion').style.visibility != "visible")
-                document.getElementById('searchRegion').style.visibility = "visible";
-            else
-                document.getElementById('searchRegion').style.visibility = "hidden";
+            document.getElementById('navSearch').onclick = function()
+            {
+                if (!document.getElementById('searchRegion').style.visibility || document.getElementById('searchRegion').style.visibility != "visible")
+                    document.getElementById('searchRegion').style.visibility = "visible";
+                else
+                    document.getElementById('searchRegion').style.visibility = "hidden";
 
-            document.getElementById("searchField").value = "";
-            document.getElementById("searchField").focus();
+                document.getElementById("searchField").value = "";
+                document.getElementById("searchField").focus();
+            }
         }
 
         navigator.sayswho= (function(){
@@ -274,50 +278,54 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
     var setLoggedOutState = function()
     {
         BROWSER.username = null;
-        
-        document.getElementById('loginLinks').innerHTML = '<div><a id="logoutLink" href="#">Login</a></div>';
-        document.getElementById('infoLoginRegion').style.opacity = 1;
-        document.getElementById('navProfile').style['background-image'] = 'url(/img/navProfile.png)';
 
-        if (GetUrlValue('j') || GetUrlValue('enableJoin') )
+        if (!EMBEDDED)
         {
-            document.getElementById('loginLinks').innerHTML = '<div><a id="joinLink" href="#">Join</a> &nbsp; &bullet; &nbsp; <a id="logoutLink" href="#">Login</a></div>';
+            document.getElementById('loginLinks').innerHTML = '<div><a id="logoutLink" href="#">Login</a></div>';
+            document.getElementById('infoLoginRegion').style.opacity = 1;
+            document.getElementById('navProfile').style['background-image'] = 'url(/img/navProfile.png)';
 
-            document.getElementById('joinLink').onclick = function()
+            if (GetUrlValue('j') || GetUrlValue('enableJoin') )
             {
-                showJoinBox();
+                document.getElementById('loginLinks').innerHTML = '<div><a id="joinLink" href="#">Join</a> &nbsp; &bullet; &nbsp; <a id="logoutLink" href="#">Login</a></div>';
+
+                document.getElementById('joinLink').onclick = function()
+                {
+                    showJoinBox();
+                }
+            }
+
+            document.getElementById('logoutLink').onclick = function()
+            {
+                showLoginBox();
+                document.getElementById('username').focus();
+
+                document.getElementById('username').style['border-color'] = '';
+                document.getElementById('password').style['border-color'] = '';
+
+                document.getElementById('closeLoginPopup').onclick = function()
+                {
+                    hideLoginBox();
+                }
+
+                $('#loginForm').submit(function()
+                {
+                    var usr = document.getElementById('username').value.toLowerCase();
+                    var pwd = document.getElementById('password').value;
+
+                    if (usr && pwd && usr != "" && pwd != "")
+                    {
+                        CORELINK.auth({u: usr, p: pwd});
+                        document.getElementById('password').value = "";
+                    }
+                    else
+                    {
+                        swal("Login Error", "Please enter a username and a password.", "error");
+                    }
+                });
             }
         }
 
-        document.getElementById('logoutLink').onclick = function()
-        {
-            showLoginBox();
-            document.getElementById('username').focus();
-
-            document.getElementById('username').style['border-color'] = '';
-            document.getElementById('password').style['border-color'] = '';
-
-            document.getElementById('closeLoginPopup').onclick = function()
-            {
-                hideLoginBox();
-            }
-
-            $('#loginForm').submit(function()
-            {
-                var usr = document.getElementById('username').value.toLowerCase();
-                var pwd = document.getElementById('password').value;
-
-                if (usr && pwd && usr != "" && pwd != "")
-                {
-                    CORELINK.auth({u: usr, p: pwd});
-                    document.getElementById('password').value = "";
-                }
-                else
-                {
-                    swal("Login Error", "Please enter a username and a password.", "error");
-                }
-            });
-        }
         VIEWER.loggedOut();
     }
     BROWSER.setLoggedOutState = setLoggedOutState;
@@ -350,7 +358,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
     var hideLoginBox = function()
     {
-        document.getElementById('loginPopup').style.visibility = 'hidden';
+        if (!EMBEDDED)
+            document.getElementById('loginPopup').style.visibility = 'hidden';
         document.getElementById('screenShade').style.visibility = 'hidden';
         $('#main').removeClass('blur-filter');
     }
@@ -423,20 +432,24 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
     {
         document.getElementById("jfpassword").value = "";  
         document.getElementById("jfpassword2").value = "";
-        document.getElementById('joinPopup').style.visibility = 'hidden';
+        if (!EMBEDDED)
+            document.getElementById('joinPopup').style.visibility = 'hidden';
         document.getElementById('screenShade').style.visibility = 'hidden';
         $('#main').removeClass('blur-filter');
     }
 
     var setLoggedInState = function()
     {
-        document.getElementById('loginLinks').innerHTML = "<div>" + BROWSER.username + '<br><a id="logoutLink" href="javascript:">Logout</a></div>';
-        document.getElementById('infoLoginRegion').style.opacity = "";
-        document.getElementById('navProfile').style['background-image'] = 'url(/img/user/thumb/' + BROWSER.username + '.png)';
-
-        document.getElementById('logoutLink').onclick = function()
+        if (!EMBEDDED)
         {
-            logout();
+            document.getElementById('loginLinks').innerHTML = "<div>" + BROWSER.username + '<br><a id="logoutLink" href="javascript:">Logout</a></div>';
+            document.getElementById('infoLoginRegion').style.opacity = "";
+            document.getElementById('navProfile').style['background-image'] = 'url(/img/user/thumb/' + BROWSER.username + '.png)';
+
+            document.getElementById('logoutLink').onclick = function()
+            {
+                logout();
+            }
         }
 
         VIEWER.loggedIn();
@@ -469,7 +482,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         if (!BROWSER.cache)
             BROWSER.cache = {h:{}};
 
-        if (BROWSER.cache && BROWSER.cache.h)
+        if (!EMBEDDED && BROWSER.cache && BROWSER.cache.h)
         {
             // Remove all holons from cache apart from conversations and comment holons being displayed
             var conversationId = INFOPANEL.getCurrentHolonId();
@@ -875,7 +888,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                             BROWSER.cache.h[l._fi].__ph.push(l._ti);
                     }
 
-                    if (l._ti == INFOPANEL.getCurrentHolonId())
+                    if (!EMBEDDED && l._ti == INFOPANEL.getCurrentHolonId())
                         contentChanged = true;
 
                     VIEWER.processLinkUpdate(l._id, p.pp);

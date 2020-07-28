@@ -58,11 +58,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	{
 		var availableHeight;
 
-		availableHeight = viewHeight -BROWSER.geom.headerSize;
+		if (!EMBEDDED)
+			availableHeight = viewHeight -BROWSER.geom.headerSize;
+		else
+			availableHeight = viewHeight;
 
 		VIEWER.geom.diam = Math.min(availableHeight, availableWidth) - 2*(VIEWER.geom.ringSize);
 		VIEWER.geom.x = availableWidth/2;
-		VIEWER.geom.y = availableHeight/2 + BROWSER.geom.headerSize;
+
+		if (!EMBEDDED)
+			VIEWER.geom.y = availableHeight/2 + BROWSER.geom.headerSize;
+		else
+			VIEWER.geom.y = availableHeight/2;
 	}
 
 	VIEWER.init = function(_BROWSER, _CORELINK, _INFOPANEL)
@@ -78,7 +85,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		// Temp - preload image
 		var tempSprite = new PIXI.Sprite.fromImage("/img/default.png");
 
-		var w = Math.min(500, window.innerWidth - 624);
+		var w;
+
+		if (EMBEDDED)
+			w = 0;
+		else
+			w = Math.min(500, window.innerWidth - 624);
 
 		if (INFOPANEL)
 			w = INFOPANEL.getCurrentWidth();
@@ -454,7 +466,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
         selectedHolon = h;
 
-		INFOPANEL.updateContent( BROWSER.cache.h[h._id] );
+		if (!EMBEDDED) 
+			INFOPANEL.updateContent( BROWSER.cache.h[h._id] );
 
         if (canEditLink(BROWSER.cache.l[h._l]))
 	        RING.showResizeAndDeleteButtons();
@@ -636,7 +649,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 			RING.hideResizeAndDeleteButtons();
 
-			INFOPANEL.updateContent( BROWSER.cache.h[targetHolon._id] );
+			if (!EMBEDDED)
+				INFOPANEL.updateContent( BROWSER.cache.h[targetHolon._id] );
     	}
 	}
 
@@ -837,7 +851,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 							}
 						};
 
-						if (!INFOPANEL.isEditing() && !clickedOnChildHolon && !draggingHolon && lineDistance(data.global, p.position) > VIEWER.geom.diam/2 + VIEWER.geom.ringSize*2)
+						if (!EMBEDDED && !INFOPANEL.isEditing() && !clickedOnChildHolon && !draggingHolon && lineDistance(data.global, p.position) > VIEWER.geom.diam/2 + VIEWER.geom.ringSize*2)
 							VIEWER.zoomOut();
 					}
 
@@ -951,14 +965,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		{
 			this.isOver = true;
 
-			if (!selectedHolon && !INFOPANEL.isEditing())
+			if (!EMBEDDED && !selectedHolon && !INFOPANEL.isEditing())
 				INFOPANEL.updateContent( BROWSER.cache.h[h._id] );
 		}
 
 		h.mouseout = function(data){
 			
 			this.isOver = false;
-			if (!selectedHolon && !INFOPANEL.isEditing() && targetHolon)
+			if (!EMBEDDED && !selectedHolon && !INFOPANEL.isEditing() && targetHolon)
 				INFOPANEL.updateContent( BROWSER.cache.h[targetHolon._id] )
 		}
 		
@@ -1388,8 +1402,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	var onTargetHolonSet = function()
 	{
-		BROWSER.targetHolon = BROWSER.cache.h[targetHolon._id];
-		INFOPANEL.updateContent( BROWSER.cache.h[targetHolon._id] );
+		BROWSER.targetHolon = BROWSER.cache.h[targetHolon._id];		
+		
+		if (!EMBEDDED)
+			INFOPANEL.updateContent( BROWSER.cache.h[targetHolon._id] );
 	}
 
 	var setLevel = function(l)
@@ -2071,7 +2087,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		if (!w)
 			INFOPANEL.onWindowResize();
 
-		var wi = Math.min(500, window.innerWidth - 624);
+		var wi;
+		if (EMBEDDED)
+			wi = 0;
+		else
+			wi = Math.min(500, window.innerWidth - 624);
 
 		if (INFOPANEL)
 			wi = INFOPANEL.getCurrentWidth();
@@ -2125,7 +2145,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	{
 	    if (event.ctrlKey || event.metaKey)
 	    {
-	    	if (!mouseInViewer(mouseX, mouseY) || INFOPANEL.isEditing())
+	    	if (EMBEDDED || !mouseInViewer(mouseX, mouseY) || INFOPANEL.isEditing())
 				return;
 
 	        switch (String.fromCharCode(event.which).toLowerCase())
@@ -2253,7 +2273,7 @@ swal("Type Change Error", "Unknown type. The type ID was not found in the ontolo
 	    		case '.':
 					event.preventDefault();
 
-					if (!mouseInViewer(mouseX, mouseY) || INFOPANEL.isEditing())
+					if (EMBEDDED || !mouseInViewer(mouseX, mouseY) || INFOPANEL.isEditing())
 						break;
 
 					unlinkSelectedHolon();
@@ -2264,12 +2284,12 @@ swal("Type Change Error", "Unknown type. The type ID was not found in the ontolo
 	    	switch (event.keyCode)
 			{
 				case 187: // +
-					if (!mouseInViewer(mouseX, mouseY) || INFOPANEL.isEditing())
+					if (EMBEDDED || !mouseInViewer(mouseX, mouseY) || INFOPANEL.isEditing())
 						break;
 					increaseSelectedHolonSize();
 					break;
 				case 189: // -
-					if (!mouseInViewer(mouseX, mouseY) || INFOPANEL.isEditing())
+					if (EMBEDDED || !mouseInViewer(mouseX, mouseY) || INFOPANEL.isEditing())
 						break;
 					decreaseSelectedHolonSize();
 					break;
@@ -2333,7 +2353,7 @@ swal("Type Change Error", "Unknown type. The type ID was not found in the ontolo
 	{
 	    ev.preventDefault();
 
-	    if ((ev.x < window.innerWidth - INFOPANEL.getCurrentWidth()))
+	    if (EMBEDDED || (ev.x < window.innerWidth - INFOPANEL.getCurrentWidth()))
 		    VIEWER.zoomOut();
 		
 	    return false;

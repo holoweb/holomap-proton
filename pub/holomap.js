@@ -18,18 +18,38 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 */
 
-require([""+'/socket.io/socket.io.js', "js/holomap.viewer.js", "lib/pixi.js", "lib/TweenMax.min.js", "lib/ColorPropsPlugin.min.js", "js/holomap.corelink.js", "js/holomap.infopanel.js", "js/holomap.browser.js"], function(m0,m2,m3,m4,m4a,m5,m6,m7,m8)
+if (!EMBEDDED)
 {
-	// Define general modules
-	io = m0;
-	PIXI = m3;
+	require([""+'/socket.io/socket.io.js', "js/holomap.viewer.js", "lib/pixi.js", "lib/TweenMax.min.js", "lib/ColorPropsPlugin.min.js", "js/holomap.corelink.js", "js/holomap.infopanel.js", "js/holomap.browser.js"], function(m0,m1,m2,m3,m4,m5,m6,m7)
+	{
+		// Define general modules
+		io = m0;
+		PIXI = m2;
 
-	// Define modules
-	var VIEWER = m2;
-	var CORELINK = m5;
-	var INFOPANEL = m6;
-	var BROWSER = m7;
+		// Define modules
+		var VIEWER = m1;
+		var CORELINK = m5;
+		var INFOPANEL = m6;
+		var BROWSER = m7;
 
-	// Initialise
-	BROWSER.init(VIEWER, CORELINK, INFOPANEL);
-});
+		// Initialise
+		BROWSER.init(VIEWER, CORELINK, INFOPANEL);
+	});
+}
+else
+{
+	require([""+'/socket.io/socket.io.js', "js/holomap.viewer.js", "lib/pixi.js", "lib/TweenMax.min.js", "lib/ColorPropsPlugin.min.js", "js/holomap.corelink.js", "js/holomap.browser.js"], function(m0,m1,m2,m3,m4,m5,m6,m7)
+	{
+		// Define general modules
+		io = m0;
+		PIXI = m2;
+
+		// Define modules
+		var VIEWER = m1;
+		var CORELINK = m5;
+		var BROWSER = m6;
+
+		// Initialise
+		BROWSER.init(VIEWER, CORELINK, null);
+	});
+}

@@ -79,6 +79,14 @@ app.get('/portal', function (req, res)
 	res.sendfile(holomapPublicRootPath + 'portal.html');
 });
 
+app.get('/embed', function (req, res)
+{
+	if (process.env.HOLOMAP_DEV)
+		res.sendfile(holomapPublicRootPath + 'embed.dev.html');
+	else
+		res.sendfile(holomapPublicRootPath + 'embed.html');
+});
+
 // HTTP API
 /* app.get('/api/:request/:param', function (req, res)
 {
