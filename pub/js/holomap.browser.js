@@ -72,10 +72,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
             if (hAddress)
                 getHolarchyByAddress(hAddress[1]+'.'+hAddress[2]);
-            else if (domainInfo.length == 3)
-                getHolarchyByAddress("map."+thisMap)
             else if (GetUrlValue('address'))
                 getHolarchyByAddress(GetUrlValue('address'));
+            else if (domainInfo.length == 3)
+                getHolarchyByAddress("map."+thisMap)
             else
                 getHolarchyByAddress("map.home")
         }); 
