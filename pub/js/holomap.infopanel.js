@@ -1226,7 +1226,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
         doCrop = function()
 		{
-            vanilla.result({type: 'blob', size:{width:888,height:888}, format: 'png', quality: 1, circle: true }).then(function(blob)
+            vanilla.result({type: 'blob', size:{width:800,height:800}, format: 'png', quality: 1, circle: true }).then(function(blob)
             {
 				var formData = new FormData();
 				formData.append("userPhoto", blob);
