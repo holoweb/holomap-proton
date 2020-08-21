@@ -1606,7 +1606,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			{
 				var childHolonImage = PIXI.Sprite.fromFrame(bgimage);
 
-				if (childHolonImage.texture.height != 444)
+				if (childHolonImage.texture.height != 800)
 					throw("incorrect image size")
 
 				//console.log("created image", BROWSER.cache.h[chid].t);
@@ -1787,7 +1787,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 					{
 						var childChildHolonImage = PIXI.Sprite.fromFrame(bgimage);
 
-						if (childChildHolonImage.texture.height != 444)
+						if (childChildHolonImage.texture.height != 800)
 							throw("incorrect image size")
 
 						childChildHolonImage._id = chid;
@@ -1843,7 +1843,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 					{
 						var childChildHolonImage = PIXI.Sprite.fromFrame(bgimage);
 
-						if (childChildHolonImage.texture.height != 444)
+						if (childChildHolonImage.texture.height != 800)
 							throw("incorrect image size")
 
 						childChildHolonImage._id = chid;

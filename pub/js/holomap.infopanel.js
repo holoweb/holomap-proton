@@ -178,8 +178,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
         var el = document.getElementById('vanilla-demo');
 		vanilla = new Croppie(el, {
-			viewport: { width: 444, height: 444, type:"circle" },
-			boundary: { width: 600, height: 600 },
+			viewport: { width: 600, height: 600, type:"circle" },
+			boundary: { width: 700, height: 700 },
 			showZoomer: false
 		});
 
@@ -1226,7 +1226,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
         doCrop = function()
 		{
-            vanilla.result('blob', 'viewport', 'png', 1, true).then(function(blob)
+            vanilla.result({type: 'blob', size:{width:888,height:888}, format: 'png', quality: 1, circle: true }).then(function(blob)
             {
 				var formData = new FormData();
 				formData.append("userPhoto", blob);

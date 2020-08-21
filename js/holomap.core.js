@@ -46,7 +46,7 @@ HolomapCore = (function()
 				create_root_holon_node(adminUsername, "_t", "*", {t: "Holon", tid:"*", ct: [], rgb: "0,0,0"});
 				create_root_holon_node(adminUsername, "_t", "profile", {t: "Profile", tid:"profile", ct: [], rgb: "0,168,206"});
 				create_root_holon_node(adminUsername, "_t", "prep", {t: "Preparation", tid:"prep", ct: [], rgb: "0,0,100"});
-				create_root_holon_node(adminUsername, "_t", "map", {t: "Preparation", tid:"prep", ct: [], rgb: "128,0,128"});
+				create_root_holon_node(adminUsername, "_t", "map", {t: "Map", tid:"map", ct: [], rgb: "128,0,128"});
 
 				create_root_holon_node(adminUsername, "hmadmin", "admin", {t: "Holomap Administration", d: "Please take care when editing this holon."});
 

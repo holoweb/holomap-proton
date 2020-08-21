@@ -392,7 +392,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         var pass2 = document.getElementById("jfpassword2").value;
         var email = document.getElementById("jfemail").value.toLowerCase().trim();
         document.getElementById("jfemail").value = email;
-        var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+        var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,12})$/;
         
         if (!/^[a-z0-9]+$/.test(user) && user.length >= 2)
         {
