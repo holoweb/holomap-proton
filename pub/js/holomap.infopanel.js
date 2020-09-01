@@ -1304,7 +1304,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 [{ header: [1, 2, 3, false] }],
                 ['bold', 'italic', 'underline'],
                 ['image', 'code-block']
-              ]
+              ],
+              htmlEditButton: {}
             },
             placeholder: 'Enter description',
             theme: 'snow'  // or 'bubble'

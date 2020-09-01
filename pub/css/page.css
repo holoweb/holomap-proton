@@ -22,7 +22,6 @@
     src: local(archivo_italic), url('/ttf/Archivo-Italic.ttf') format('opentype');
 }
 
-
 A:link { text-decoration: none; font-weight: bold; color: #aaaaaa;} 
 A:hover { text-decoration: none; font-weight: bold; color: #aaaaaa;} 
 A:active { text-decoration: none; color: #aaaaaa; }
@@ -1004,4 +1003,9 @@ select
     border-top: none;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+}
+
+.ql-formats button
+{
+	color:#777777;
 }
