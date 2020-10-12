@@ -35,6 +35,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
     var mode;
     var conversations;
     var showComment;
+    var ifm, infoPanelChildren;
 
     // Functions
 
@@ -226,6 +227,38 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 currentHolon.vids[i] = document.getElementById('vid'+i).value;
             }
         };}
+    }
+
+    INFOPANEL.iframeMode = function(url)
+    {
+        if (url && !ifm)
+        {
+            ifm = true;
+
+            infoPanelChildren = [document.getElementById("infoPanelMain").children[0], document.getElementById("infoPanelMain").children[1]];
+			
+			document.getElementById("infoPanelMain").removeChild(infoPanelChildren[0]);
+            document.getElementById("infoPanelMain").removeChild(infoPanelChildren[1]);
+
+            var iframe = document.createElement('iframe');
+            iframe.frameBorder=0;
+            iframe.width="100%";
+            iframe.height="100%";
+            iframe.setAttribute("src", url);
+            document.getElementById("infoPanelMain").appendChild(iframe);
+        }
+        else if (!url && ifm)
+        {
+            ifm = false;
+
+            document.getElementById("infoPanelMain").removeChild(document.getElementById("infoPanelMain").children[0]);
+            document.getElementById("infoPanelMain").appendChild(infoPanelChildren[0]);
+            document.getElementById("infoPanelMain").appendChild(infoPanelChildren[1]);
+        }
+    }
+    INFOPANEL.inIframeMode = function()
+    {
+        return ifm;
     }
 
     INFOPANEL.isEditing = function()
@@ -694,6 +727,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             else
                 holon = BROWSER.targetHolon;
         }
+
+        if (INFOPANEL.inIframeMode())
+            INFOPANEL.iframeMode(false);
 
         if (currentTab != 'content') return;
 
@@ -1304,8 +1340,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 [{ header: [1, 2, 3, false] }],
                 ['bold', 'italic', 'underline'],
                 ['image', 'code-block']
-              ],
-              htmlEditButton: {}
+              ]//,htmlEditButton: {}
             },
             placeholder: 'Enter description',
             theme: 'snow'  // or 'bubble'

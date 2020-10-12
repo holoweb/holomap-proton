@@ -1406,6 +1406,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		
 		if (!EMBEDDED)
 			INFOPANEL.updateContent( BROWSER.cache.h[targetHolon._id] );
+
+		if (BROWSER.cache.h[targetHolon._id].urls && BROWSER.cache.h[targetHolon._id].urls.length > 0 && BROWSER.cache.h[targetHolon._id]._t == "iframe")
+		{
+			INFOPANEL.iframeMode(BROWSER.cache.h[targetHolon._id].urls[0]);
+		}
+		else if (INFOPANEL.inIframeMode())
+		{
+			INFOPANEL.iframeMode(false);
+		}
 	}
 
 	var setLevel = function(l)
