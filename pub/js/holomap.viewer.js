@@ -1411,7 +1411,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		{
 			INFOPANEL.iframeMode(BROWSER.cache.h[targetHolon._id].urls[0]);
 		}
-		else if (INFOPANEL.inIframeMode())
+		else if (!EMBEDDED && INFOPANEL.inIframeMode())
 		{
 			INFOPANEL.iframeMode(false);
 		}
