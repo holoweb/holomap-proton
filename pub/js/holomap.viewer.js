@@ -538,14 +538,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	                if (BROWSER.cache.h[targetHolonId]._pe && BROWSER.cache.h[targetHolonId]._pe.length > 0)
 	                	holonAttributes._pe.push( BROWSER.cache.h[targetHolonId]._u );
-	            }
+				}
+				
+				if (BROWSER.map)
+					holonAttributes._m = BROWSER.map;
 
 	            CORELINK.createLinkedHolon({
 	                _t: holon.id,
-	                _ti: targetHolonId,
+					_ti: targetHolonId,
 	                h: holonAttributes,
 	                l: {x: link_x, y: link_y, s: 0.2}
-	            })
+				})
 
 	            console.log("created...",{
 	                _t: holon.id,

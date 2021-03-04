@@ -66,15 +66,20 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             // Load home holon
             var domainInfo = location.hostname.replace("www.","").split('.');
             var hAddress = location.href.replace(origin+'/','').match(/^([a-z0-9]+)\.([a-z0-9]+)$/i);
+            var map = location.href.replace(origin+'/','').match(/^([a-z0-9]+)$/i);
 
             if (domainInfo.length == 3)
                 thisMap = domainInfo[0];
+            else if (map)
+                thisMap = map[1];
+
+            BROWSER.map = thisMap;
 
             if (hAddress)
                 getHolarchyByAddress(hAddress[1]+'.'+hAddress[2]);
             else if (GetUrlValue('address'))
                 getHolarchyByAddress(GetUrlValue('address'));
-            else if (domainInfo.length == 3)
+            else if (thisMap)
                 getHolarchyByAddress("map."+thisMap)
             else
                 getHolarchyByAddress("map.home")
@@ -136,7 +141,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                     isGlobal:{t: "Is a global service (single holon instance)", d: "<b>$.isGlobal$</b>", e: "Is a global service (single holon instance) <input id='attr_isGlobal' type='checkbox'></input>"},
                     isCocreative:{t: "Is a co-creative holon (users can create holons in here)", d: "<b>$.isCocreative$</b>", e: "Is a co-creative holon (users can create holons in here) <input id='attr_isCocreative' type='checkbox'></input>"},
                     isComplete:{t: "Action is complete", d: "Complete: <b>$.isComplete$</b>", e: "Is complete <input id='attr_isComplete' type='checkbox'></input>"},
-                    col:{t: "Collaborators", d: "Collaborators: <b><font color='yellow'>$.col$</font></b>", e: "Collaborators: <input id='attr_col' type='text' class='textField' placeholder='Who has assigned themselves to this action (collaborators)' style='width:95%'></input>"}
+                    col:{t: "Collaborators", d: "Collaborators: <b><font color='yellow'>$.col$</font></b>", e: "Collaborators: <input id='attr_col' type='text' class='textField' placeholder='Who has assigned themselves to this action (collaborators)' style='width:95%'></input>"},
+                    css: {t: "CSS Style", d: "$.$", e: "<h3>CSS Style:</h3> <textarea id='attr_css' style='width:98%; height:100px' placeholder='Enter CSS stylesheet for map'></textarea>"}
                     };
 
         var needToConfirm = true;
@@ -720,6 +726,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
             document.getElementById('addressIndicator').style.visibility = "visible";
             BROWSER.updateAddressIndicator(h);
+
+
+            if (h._t == "map" && h._n == BROWSER.map && h.css)
+            {
+                function addStyle(styleString)
+                {
+                    const style = document.createElement('style');
+                    style.textContent = styleString;
+                    document.head.append(style);
+                }
+
+                addStyle(h.css);
+            }
+
+
+
         }
         else
         {

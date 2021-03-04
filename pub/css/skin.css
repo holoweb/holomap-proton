@@ -18,8 +18,3 @@ A:link { text-decoration: none; font-weight: bold; color: rgb(130, 150, 228);}
 A:hover { text-decoration: none; font-weight: bold; color: rgb(130, 150, 228);} 
 A:active { text-decoration: none; color: rgb(130, 150, 228); }
 A:visited { text-decoration: none; color: rgb(130, 150, 228); }
-
-#infoPanelHeader
-{
-	background: rgba(62,20,79, 0.75);
-}
