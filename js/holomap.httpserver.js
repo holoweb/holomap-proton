@@ -74,6 +74,16 @@ app.get('/', function (req, res)
 		res.sendfile(holomapPublicRootPath + 'index.html');
 });
 
+app.get('/terms.html', function (req, res)
+{
+	res.sendfile(holomapPublicRootPath + 'terms.html');
+});
+
+app.get('/privacy.html', function (req, res)
+{
+	res.sendfile(holomapPublicRootPath + 'privacy.html');
+});
+
 app.get('/portal', function (req, res)
 {
 	res.sendfile(holomapPublicRootPath + 'portal.html');

@@ -9,3 +9,5 @@
 db
 package-lock.json
 sslcert
+/pub/privacy.html
+/pub/terms.html

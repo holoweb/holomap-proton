@@ -1418,6 +1418,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		{
 			INFOPANEL.iframeMode(false);
 		}
+
+		document.title = "Holomap - " + BROWSER.targetHolon.t;
 	}
 
 	var setLevel = function(l)
