@@ -824,7 +824,7 @@ HolomapMembrane = (function()
 				console.log("Sending password reset mail to",email)
 
 				var mailOptions = {
-				    from: "Holomap <bot@holoweb.services>", // sender address
+				    from: "Holomap <noreply@holomap.org>", // sender address
 				    to: email, // list of receivers
 				    subject: "Holomap - Password Reset", // Subject line
 				    text: "Hi there, your new password is: " + p, // plaintext body

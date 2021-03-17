@@ -293,7 +293,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             document.getElementById('infoLoginRegion').style.opacity = 1;
             document.getElementById('navProfile').style['background-image'] = 'url(/img/navProfile.png)';
 
-            if (GetUrlValue('j') || GetUrlValue('enableJoin') )
+            if (true) // GetUrlValue('j') || GetUrlValue('enableJoin')
             {
                 document.getElementById('loginLinks').innerHTML = '<div><a id="joinLink" href="#">Join</a> &nbsp; &bullet; &nbsp; <a id="logoutLink" href="#">Login</a></div>';
 
