@@ -34,6 +34,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
     
     BROWSER.geom = { headerSize: 48, navbarSize: 92};
     BROWSER.profileHolonId = null;
+    BROWSER.subscriptionMode = getCookie('subscriptions');
 
     ////
 
@@ -293,14 +294,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             document.getElementById('infoLoginRegion').style.opacity = 1;
             document.getElementById('navProfile').style['background-image'] = 'url(/img/navProfile.png)';
 
-            if (true) // GetUrlValue('j') || GetUrlValue('enableJoin')
+            var link = '#';
+            if (BROWSER.subscriptionMode && !GetUrlValue('e'))
+                link = BROWSER.subscriptionMode;
+            document.getElementById('loginLinks').innerHTML = '<div><a id="joinLink" href="'+link+'">Join</a> &nbsp; &bullet; &nbsp; <a id="logoutLink" href="#">Login</a></div>';
+          
+            if (!BROWSER.subscriptionMode || GetUrlValue('e'))
             {
-                document.getElementById('loginLinks').innerHTML = '<div><a id="joinLink" href="#">Join</a> &nbsp; &bullet; &nbsp; <a id="logoutLink" href="#">Login</a></div>';
-
                 document.getElementById('joinLink').onclick = function()
                 {
                     showJoinBox();
                 }
+
+                if (GetUrlValue('e') && BROWSER.subscriptionMode)
+                {
+                    document.getElementById('jfemail').value = GetUrlValue('e');
+                    document.getElementById('jfemail').disabled = true;
+                }
+            }
+            else
+            {
+                $('#joinLink').attr('target', '_blank');
             }
 
             document.getElementById('logoutLink').onclick = function()

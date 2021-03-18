@@ -24,8 +24,11 @@ var express = require('express');
 var fs = require('fs');
 var multer  = require('multer')
 var upload = multer({ dest: './' })
+var bodyParser = require('body-parser');
 
 // Start node HTTP and HTTPS servers
+
+var apiConfig = require("../cfg/apiConfig.json");
 
 var app = express();
 
@@ -38,6 +41,7 @@ server = require('https').createServer(credentials, app);
 var httpServer = require('http').createServer(app);
 
 app.enable('trust proxy');
+
 
 app.use (function (req, res, next)
 {
@@ -52,6 +56,7 @@ app.use (function (req, res, next)
 		res.redirect('https://' + req.headers.host + req.url);
 	}
 });
+
 
 if (httpServer.listen(holomapServerPort))
 	console.log("...http server up on port " + holomapServerPort + "!");
@@ -68,6 +73,11 @@ else
 
 app.get('/', function (req, res)
 {
+	if (apiConfig.subscriptions)
+		res.cookie('subscriptions', apiConfig.subscriptions.join, {maxAge: 1000 * 60 * 5})
+	else
+		res.cookie('subscriptions', '', {maxAge: 1000 * 60 * 5})
+	
 	if (process.env.HOLOMAP_DEV)
 		res.sendfile(holomapPublicRootPath + 'index.dev.html');
 	else
@@ -98,12 +108,29 @@ app.get('/embed', function (req, res)
 });
 
 // HTTP API
+
+if (apiConfig.subscriptions)
+{
+	app.use(bodyParser.json({
+		verify: (req, res, buf) => {
+		  req.rawBody = buf
+		}
+	  }))
+
+	app.post('/api/subscription/created', (req, res) =>
+	{ 
+		if (apiConfig.subscriptions.ip == req.connection.remoteAddress)
+			httpAPI("subscription","created", req, res);
+		else
+			console.log("API request from unknown source", req.connection.remoteAddress)
+	});
+}
+
 /* app.get('/api/:request/:param', function (req, res)
 {
 	console.log("params:", req.params.request, req.params.param);
-	httpAPI(req.params.request, req.params.param, res);
+	httpAPI(req.params.request, req.params.param, req, res);
 }); */
-
 
 // Routing: image upload
 

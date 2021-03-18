@@ -24,6 +24,7 @@ var TwinBcrypt = require('twin-bcrypt');
 var sha3_512 = require('js-sha3').keccak_512;
 var sha512 = require('js-sha512');
 var fs = require('fs');
+var crypto = require('crypto'); 
 
 var nodemailer = require("nodemailer");
 
@@ -41,8 +42,11 @@ HolomapMembrane = (function()
 	var currentTargets; // socket-id-node id association tracking target holon for each socket
 	var socketAuth; // socket.id-username association for authenticated sockets
 	var userSockets; // username-socket.id association
+	var authorisedEmails; // for subscriptions
 
-	var smtpConfig, smtpTransport;
+	var smtpTransport;
+
+	var apiConfig;
 
 	function HolomapMembrane(c)
 	{
@@ -53,8 +57,9 @@ HolomapMembrane = (function()
 		userSockets = {};
 		targetTotals = {};
 		currentTargets = {};
+		authorisedEmails = {};
 		
-		smtpConfig = require("../cfg/smtpConfig.json");
+		var smtpConfig = require("../cfg/smtpConfig.json");
 		smtpTransport = nodemailer.createTransport(smtpConfig);
 
         var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8'); // key (could also be .pem)
@@ -62,6 +67,14 @@ HolomapMembrane = (function()
         var credentials = {key: privateKey, cert: certificate};
 
 		io = require('socket.io').listen(server, credentials);
+
+		apiConfig = require("../cfg/apiConfig.json");
+		var origins = apiConfig.origins;
+		if (process.env.HOLOMAP_DEV)
+			origins.push('https://localhost:443', 'https://localhost:80');
+		io.origins(origins);
+
+		console.log("authorised domains: ", origins.join(", "))
 
 		io.sockets.on('connection', function (socket)
 		{
@@ -192,16 +205,72 @@ HolomapMembrane = (function()
 		});
 	}
 
-	httpAPI = function(request, param, res)
+	httpAPI = function(request, param, req, res)
 	{
 		switch(request)
 		{
-			case "getHolarchy":
+			case "subscription":
+
+				if (!apiConfig.subscriptions) return;
+
+				var verifyWebook = function (secret, body, signature)
+				{
+					signatureComputed = crypto.createHmac('SHA256', secret).update(body).digest('base64');
+					return ( signatureComputed === signature ) ? true : false;
+				}
+
+				if (verifyWebook(apiConfig.subscriptions.secret, req.rawBody, req.headers['x-wc-webhook-signature']))
+				{
+					console.log("WEBHOOK VERIFIED")
+
+					if (param == "created" && req.headers['x-wc-webhook-topic'] == "subscription.created")
+					{
+						if (req.body.billing.email &&
+							req.body.line_items && req.body.line_items.length>=1 &&
+							req.body.line_items[0].name == apiConfig.subscriptions.name)
+						{
+							var email = req.body.billing.email;
+							console.log("authorised", email)
+						}
+
+						authorisedEmails[email] = true;
+
+						// send email with invite to sign up
+
+						res.send("OK");
+
+						var mailOptions = {
+							from: "Holomap <noreply@holomap.org>",
+							to: email,
+							subject: "Holomap Earth - Create Your Account", // Subject line
+							text: apiConfig.subscriptions.invite.text.replace("*EMAIL*", email),
+							html: apiConfig.subscriptions.invite.html.replace("*EMAIL*", email)
+						}
+		
+						console.log(mailOptions)
+						
+						// Send mail with defined transport object
+						smtpTransport.sendMail(mailOptions, function(error, response)
+						{
+							if (error)
+							{
+								console.log("Error sending e-mail:", error);
+							}
+							else
+							{
+								console.log("E-mail sent - " + JSON.stringify(response));
+							}
+						});
+					}
+				}
+
+				break;
+			/*case "getHolarchy":
 				core.get_holarchy_no_auth(param, function(response)
 				{
 					res.json(response);
 				})
-				break;
+				break;*/
 		}
 	}
 
@@ -435,6 +504,12 @@ HolomapMembrane = (function()
 
 	var create_user = function(socket, request)
 	{
+		if (apiConfig.subscriptions && !authorisedEmails[request.e])
+		{
+			socket.emit('create_user_resp', {err: 3});
+			return;
+		}
+
 		core.create_user(request, function(e)
 		{
 			// User created

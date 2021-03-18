@@ -9,6 +9,8 @@
     "watch": "coffee --bare --watch --compile ."
   },
   "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "crypto": "^1.0.1",
     "dotenv": "0.5.1",
     "express": "^4.17.1",
     "imagemagick": "^0.1.3",
