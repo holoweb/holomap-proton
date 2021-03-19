@@ -255,7 +255,7 @@ HolomapMembrane = (function()
 							to: email,
 							subject: apiConfig.subscriptions.invite.subject,
 							text: apiConfig.subscriptions.invite.text.replace("*EMAIL*", email),
-							html: htmlContents
+							html: htmlContents.replace("*EMAIL*", email)
 						}
 						
 						// Send mail with defined transport object

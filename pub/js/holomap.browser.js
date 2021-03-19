@@ -317,6 +317,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 $('#joinLink').attr('target', '_blank');
             }
 
+            if (GetUrlValue('e') && BROWSER.subscriptionMode)
+                showJoinBox();
+
             document.getElementById('logoutLink').onclick = function()
             {
                 showLoginBox();
