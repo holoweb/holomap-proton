@@ -11,3 +11,5 @@ package-lock.json
 sslcert
 /pub/privacy.html
 /pub/terms.html
+/cfg/apiConfig.json
+/cfg/smtpConfig.json
