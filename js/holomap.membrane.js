@@ -239,27 +239,30 @@ HolomapMembrane = (function()
 
 						res.send("OK");
 
-						var mailOptions = {
-							from: "Holomap <noreply@holomap.org>",
-							to: email,
-							subject: "Holomap Earth - Create Your Account", // Subject line
-							text: apiConfig.subscriptions.invite.text.replace("*EMAIL*", email),
-							html: apiConfig.subscriptions.invite.html.replace("*EMAIL*", email)
+					
+						var htmlContents = apiConfig.subscriptions.invite.text.replace("*EMAIL*", email);
+						try
+						{
+							htmlContents = fs.readFileSync(apiConfig.subscriptions.invite.html, { encoding: 'utf8' });
 						}
-		
-						console.log(mailOptions)
+						catch(err)
+						{
+							console.error(err);
+						}
+
+						var mailOptions = {
+							from: apiConfig.subscriptions.invite.from,
+							to: email,
+							subject: apiConfig.subscriptions.invite.subject,
+							text: apiConfig.subscriptions.invite.text.replace("*EMAIL*", email),
+							html: htmlContents
+						}
 						
 						// Send mail with defined transport object
 						smtpTransport.sendMail(mailOptions, function(error, response)
 						{
 							if (error)
-							{
-								console.log("Error sending e-mail:", error);
-							}
-							else
-							{
-								console.log("E-mail sent - " + JSON.stringify(response));
-							}
+								console.log("Error sending invite e-mail:", error);
 						});
 					}
 				}
