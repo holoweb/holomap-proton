@@ -92,7 +92,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			  </form>
 		</div>
 
-		<div id="joinPopup" class="joinPopup" style="height:420px;">
+		<div id="joinPopup" class="joinPopup">
 			<a id="closeJoinPopup" href="#" class="close"><img src="/img/close.png" class="btn_close" title="Close Window" alt="Close" /></a>
 			<h2>Join Holomap</h2>
 			  <form id="joinForm" class="signin" action="javascript:">
@@ -112,7 +112,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			        <label class="password">
 			        <span>Password</span>
 			        <input style="height:30px" id="jfpassword2" name="password" value="" type="password" placeholder="Confirm password">
-			        </label>
+					</label>
+					<input type="checkbox" style="width: 20px;" id="agreement" name="agreement">
+					<label for="agreement" style="display: inline;"> I confirm I have read, understand and agree<br>to the <a href="terms.html" target="_blank">Terms of Use</a> and <a href="privacy.html" target="_blank">Privacy Policy</a>.</label><br>
 			        <button id="joinButton" class="submit button" type="submit">Join</button>
 			        </fieldset>
 			  </form>

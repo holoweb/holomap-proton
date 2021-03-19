@@ -414,9 +414,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         document.getElementById("jfemail").value = email;
         var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,12})$/;
         
-        if (!/^[a-z0-9]+$/.test(user) && user.length >= 2)
+        if (!(/^[a-z][a-z0-9]+$/.test(user)))
         {
-            swal("Invalid Username!", "You may use letters and numbers only.", "error");
+            swal("Invalid Username!", "You may use letters and numbers only. The username must begin with a letter and be at least 2 characters in length.", "error");
             document.getElementById("jfusername").focus();
             return false;   
         }
@@ -438,6 +438,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             document.getElementById("jfpassword").focus();
             document.getElementById("jfpassword").value = "";  
             document.getElementById("jfpassword2").value = "";
+            return false;
+        }
+        else if (!document.getElementById("agreement").checked)
+        {
+            swal("Terms of Use", "You must first agree to the terms of use and privacy policy to join this Holomap.", "error");
             return false;
         }
         else
