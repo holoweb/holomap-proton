@@ -25,7 +25,7 @@ var sha3_512 = require('js-sha3').keccak_512;
 var sha512 = require('js-sha512');
 var fs = require('fs');
 var crypto = require('crypto'); 
-
+var Datastore = require('nedb');
 var nodemailer = require("nodemailer");
 
 httpAPI = null;
@@ -42,7 +42,8 @@ HolomapMembrane = (function()
 	var currentTargets; // socket-id-node id association tracking target holon for each socket
 	var socketAuth; // socket.id-username association for authenticated sockets
 	var userSockets; // username-socket.id association
-	var authorisedEmails; // for subscriptions
+	var subscriptions; // storing subscriptions
+	var authorisedEmails; // based on subscriptions
 
 	var smtpTransport;
 
@@ -58,7 +59,7 @@ HolomapMembrane = (function()
 		targetTotals = {};
 		currentTargets = {};
 		authorisedEmails = {};
-		
+
 		var smtpConfig = require("../cfg/smtpConfig.json");
 		smtpTransport = nodemailer.createTransport(smtpConfig);
 
@@ -69,12 +70,23 @@ HolomapMembrane = (function()
 		io = require('socket.io').listen(server, credentials);
 
 		apiConfig = require("../cfg/apiConfig.json");
+
 		var origins = apiConfig.origins;
 		if (process.env.HOLOMAP_DEV)
 			origins.push('https://localhost:443', 'https://localhost:80');
 		io.origins(origins);
-
 		console.log("authorised domains: ", origins.join(", "))
+
+		if (apiConfig.subscriptions)
+		{
+			subscriptions = new Datastore({ filename: './subscriptions', autoload: true });
+			subscriptions.find({}, function (err, docs)
+    		{
+				if (!err && docs)
+					for (var i = 0; i < docs.length; i++)
+						authorisedEmails[docs[i].e] = true;
+			});
+		}
 
 		io.sockets.on('connection', function (socket)
 		{
@@ -230,40 +242,45 @@ HolomapMembrane = (function()
 							req.body.line_items[0].name == apiConfig.subscriptions.name)
 						{
 							var email = req.body.billing.email;
-							console.log("authorised", email)
+							console.log("subscription created, authorised", email)
+
+							subscriptions.insert({e: email, t: new Date().getTime()}, function(err)
+							{
+								if (err)
+								{
+									console.log("error saving subscription:", err);
+								}
+							});
+
+							authorisedEmails[email] = true;
+
+							res.send("OK");
+
+							var htmlContents = apiConfig.subscriptions.invite.text.replace("*EMAIL*", email);
+							try
+							{
+								htmlContents = fs.readFileSync(apiConfig.subscriptions.invite.html, { encoding: 'utf8' });
+							}
+							catch(err)
+							{
+								console.error(err);
+							}
+
+							var mailOptions = {
+								from: apiConfig.subscriptions.invite.from,
+								to: email,
+								subject: apiConfig.subscriptions.invite.subject,
+								text: apiConfig.subscriptions.invite.text.replace("*EMAIL*", email),
+								html: htmlContents.replace("*EMAIL*", email)
+							}
+
+							// Send mail with defined transport object
+							smtpTransport.sendMail(mailOptions, function(error, response)
+							{
+								if (error)
+									console.log("Error sending invite e-mail:", error);
+							});
 						}
-
-						authorisedEmails[email] = true;
-
-						// send email with invite to sign up
-
-						res.send("OK");
-
-					
-						var htmlContents = apiConfig.subscriptions.invite.text.replace("*EMAIL*", email);
-						try
-						{
-							htmlContents = fs.readFileSync(apiConfig.subscriptions.invite.html, { encoding: 'utf8' });
-						}
-						catch(err)
-						{
-							console.error(err);
-						}
-
-						var mailOptions = {
-							from: apiConfig.subscriptions.invite.from,
-							to: email,
-							subject: apiConfig.subscriptions.invite.subject,
-							text: apiConfig.subscriptions.invite.text.replace("*EMAIL*", email),
-							html: htmlContents.replace("*EMAIL*", email)
-						}
-						
-						// Send mail with defined transport object
-						smtpTransport.sendMail(mailOptions, function(error, response)
-						{
-							if (error)
-								console.log("Error sending invite e-mail:", error);
-						});
 					}
 				}
 

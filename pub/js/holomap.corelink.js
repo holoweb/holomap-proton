@@ -134,6 +134,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                         document.getElementById("jfemail").focus();
                         swal("E-mail address already in use!", "E-mail address already in use on another username. Please use a different e-mail address.", "error");
                         break;
+                    case 3:
+                        document.getElementById("jfemail").focus();
+                        swal("E-mail not authorised!", "Please check you have subscribed to the service using this e-mail address.", "error");
+                        break;    
                 }
             }
             else

@@ -7,6 +7,7 @@
 /pub/img/user/
 /pub/img/user/thumb/
 db
+subscriptions
 package-lock.json
 sslcert
 /pub/privacy.html
