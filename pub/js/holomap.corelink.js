@@ -120,7 +120,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             if (res.u)
             {
                 BROWSER.hideJoinBox();
-                swal({title: "Welcome to Holomap!", text:"<b>Sign-up completed successfully.</b> You are now logged in!<br><br>Please remember that Holomap is currently in beta. If you encounter any problems, <i>please just refresh the page</i>; if that doesn't help, contact us on Holomap.org!<br><br>Have fun!", type:"success", html: true} );
+                swal({title: "Welcome to Holomap!", text:"<b>Sign-up completed successfully.</b> You are now logged in!<br><br>Please remember that Holomap is currently in beta. If you encounter any problems <i>please just refresh the page</i>; if that doesn't help please contact us at Holomap.org!<br><br>Have fun!", type:"success", html: true} );
             }
             else if (res.err)
             {
