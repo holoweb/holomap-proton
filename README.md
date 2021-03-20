@@ -1,12 +1,10 @@
 # Holomap Proton
 
-Holomap is a real-time collaborative holonic mapping platform.
-
-Latest update: image processing (cropping) now done in browser!
+Holomap is a real-time collaborative holonic mapping platform. For more information please visit holomap.org.
 
 ## Installation
 
-1. Install imagemagick (`sudo apt install imagemagick' on most systems)
+1. Install imagemagick (`sudo apt install imagemagick` on most systems)
 
 2. `./install.sh`
 
