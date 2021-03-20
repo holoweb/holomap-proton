@@ -5,7 +5,10 @@ Holomap is a real-time collaborative holonic mapping platform.
 Latest update: image processing (cropping) now done in browser!
 
 ## Installation
-`./install.sh`
+
+1. Install imagemagick (`sudo apt install imagemagick' on most systems)
+
+2. `./install.sh`
 
 ## Dev Server
 `./start_dev`
