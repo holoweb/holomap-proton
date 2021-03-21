@@ -24,6 +24,9 @@ require('dotenv').load();
 holomapPublicRootPath = './pub/';
 holomapServerPort = process.env.PORT || 80;
 
+var fs = require('fs');
+if (!fs.existsSync('./log')) fs.mkdirSync('./log');
+
 var HolomapCore, HolomapMembrane;
 
 // -----------------------------------------------------------------------------------------------------------

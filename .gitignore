@@ -15,3 +15,5 @@ sslcert
 /cfg/apiConfig.json
 /cfg/smtpConfig.json
 /pub/css/skin.css
+/log/
+/log/*

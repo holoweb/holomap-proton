@@ -964,7 +964,7 @@ if (BROWSER.targetHolon && BROWSER.targetHolon._alm)
 
     ////    
 
-    function createCookie(name,value,days)
+    function createCookie(name,value,days,domain)
     {
         if (days) {
         var date = new Date();
@@ -972,17 +972,17 @@ if (BROWSER.targetHolon && BROWSER.targetHolon._alm)
         var expires = "; expires="+date.toGMTString();
         }
         else var expires = "";
-        document.cookie = name+"="+value+expires+";domain=.holomap.io;path=/"; // domain=.holomap.io;
+        document.cookie = name+"="+value+expires+";domain="+domain+";path=/";
     }
     BROWSER.createCookie = createCookie;
 
     function getCookie(c_name)
     {
-    var i,x,y,ARRcookies=document.cookie.split(";");
-    for (i=0;i<ARRcookies.length;i++)
+    var i,x,y,cs=document.cookie.split(";");
+    for (i=0;i<cs.length;i++)
     {
-      x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
-      y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+      x=cs[i].substr(0,cs[i].indexOf("="));
+      y=cs[i].substr(cs[i].indexOf("=")+1);
       x=x.replace(/^\s+|\s+$/g,"");
       if (x==c_name)
         {

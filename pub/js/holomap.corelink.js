@@ -84,6 +84,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 {
                     localStorage['pepper'] = h2(localStorage['pepper'] + res.key);
                     BROWSER.storeSessionKey(res.key);
+                    BROWSER.createCookie('u',CryptoJS.SHA512(res.u).toString(CryptoJS.enc.Base64),99999,window.location.hostname);
                 }
     
                 ek = h2(localStorage['pepper']);

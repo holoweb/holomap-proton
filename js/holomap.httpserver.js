@@ -25,10 +25,13 @@ var fs = require('fs');
 var multer  = require('multer')
 var upload = multer({ dest: './' })
 var bodyParser = require('body-parser');
+var Datastore = require('nedb');
+var cookieParser = require("cookie-parser");
 
 // Start node HTTP and HTTPS servers
 
 var apiConfig = require("../cfg/apiConfig.json");
+var log = new Datastore({ filename: './log/pageload', autoload: true });
 
 var app = express();
 
@@ -42,6 +45,7 @@ var httpServer = require('http').createServer(app);
 
 app.enable('trust proxy');
 
+app.use(cookieParser());
 
 app.use (function (req, res, next)
 {
@@ -71,40 +75,71 @@ else
 
 // Routing: root
 
+
+
 app.get('/', function (req, res)
 {
 	if (apiConfig.subscriptions)
-		res.cookie('subscriptions', apiConfig.subscriptions.join, {maxAge: 1000 * 60 * 5})
+		res.cookie('subscriptions', apiConfig.subscriptions.join)
 	else
-		res.cookie('subscriptions', '', {maxAge: 1000 * 60 * 5})
+		res.cookie('subscriptions', '')
+
+	var id;
+	if (!req.cookies.i)
+	{
+		id = randomString(50);
+		res.cookie('i', id, {maxAge: 1000*60*60*24*9999} );
+	}
+	else
+	{
+		id = req.cookies.i;
+	}
 	
 	if (process.env.HOLOMAP_DEV)
 		res.sendfile(holomapPublicRootPath + 'index.dev.html');
 	else
 		res.sendfile(holomapPublicRootPath + 'index.html');
+
+	logPageLoad(req,'index',id)
 });
 
-app.get('/terms.html', function (req, res)
+app.get('/terms', function (req, res)
 {
 	res.sendfile(holomapPublicRootPath + 'terms.html');
+	logPageLoad(req,'terms',req.cookies.i)
 });
 
-app.get('/privacy.html', function (req, res)
+app.get('/privacy', function (req, res)
 {
 	res.sendfile(holomapPublicRootPath + 'privacy.html');
+	logPageLoad(req,'privacy',req.cookies.i)
 });
 
 app.get('/portal', function (req, res)
 {
 	res.sendfile(holomapPublicRootPath + 'portal.html');
+	logPageLoad(req,'portal',req.cookies.i)
 });
 
 app.get('/embed', function (req, res)
 {
+	var id;
+	if (!req.cookies.i)
+	{
+		id = randomString(50);
+		res.cookie('i', id, {maxAge: 1000*60*60*24*9999} );
+	}
+	else
+	{
+		id = req.cookies.i;
+	}
+
 	if (process.env.HOLOMAP_DEV)
 		res.sendfile(holomapPublicRootPath + 'embed.dev.html');
 	else
 		res.sendfile(holomapPublicRootPath + 'embed.html');
+
+	logPageLoad(req,'embed',id)
 });
 
 // HTTP API
@@ -228,3 +263,36 @@ app.get('/(\~?):com', function (req, res)
 			res.sendfile(holomapPublicRootPath + 'index.html');
 	}
 });
+
+
+const randomString = (length = 8) => {
+    let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let str = '';
+    for (let i = 0; i < length; i++) {
+        str += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return str;
+};
+
+function logPageLoad(req,page,id)
+{
+	if (apiConfig.log && apiConfig.log.pageload)
+	{
+		var ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+		log.insert(
+			{a: req.header('user-agent'),
+			t: new Date().getTime(),
+			ip: ip,
+			r: req.header('referrer'),
+			i: id,
+			u: req.cookies.u,
+			p: page
+			}, function(err)
+		{
+			if (err)
+			{
+				console.log("httpserver - error saving log:", err);
+			}
+		});
+	}
+}
