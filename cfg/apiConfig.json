@@ -1,4 +1,3 @@
 {
-    "origins": ["https://yourdomain.com:443"],
-    "log": {"pageload": true}
+    "origins": ["https://yourdomain.com:443"]
 }

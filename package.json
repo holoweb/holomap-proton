@@ -9,6 +9,7 @@
     "watch": "coffee --bare --watch --compile ."
   },
   "dependencies": {
+    "cookie": "^0.4.1",
     "cookie-parser": "^1.4.5",
     "crypto": "^1.0.1",
     "dotenv": "0.5.1",
@@ -21,7 +22,7 @@
     "nodemailer": "^6.4.5",
     "nodemon": "^1.19.1",
     "requirejs": "^2.3.6",
-    "socket.io": "^2.2.0",
+    "socket.io": "^2.4.1",
     "twin-bcrypt": "^2.1.1"
   }
 }

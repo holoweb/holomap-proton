@@ -66,7 +66,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
             // Load home holon
             var domainInfo = location.hostname.replace("www.","").split('.');
-            var hAddress = location.href.replace(origin+'/','').match(/^([a-z0-9]+)\.([a-z0-9]+)$/i);
             var map = location.href.replace(origin+'/','').match(/^([a-z0-9]+)$/i);
 
             if (domainInfo.length == 3)
@@ -75,15 +74,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 thisMap = map[1];
 
             BROWSER.map = thisMap;
-
-            if (hAddress)
-                getHolarchyByAddress(hAddress[1]+'.'+hAddress[2]);
-            else if (GetUrlValue('address'))
-                getHolarchyByAddress(GetUrlValue('address'));
-            else if (thisMap)
-                getHolarchyByAddress("map."+thisMap)
-            else
-                getHolarchyByAddress("map.home")
         }); 
 
         $("#searchField").keyup(function(event){
@@ -491,6 +481,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         BROWSER.username = username;
         setLoggedInState();
         hideLoginBox();
+        loadRootHolon();
+    }
+
+    var loadRootHolon = function()
+    {
+        var hAddress = location.href.replace(origin+'/','').match(/^([a-z0-9]+)\.([a-z0-9]+)$/i);
+
+        if (hAddress)
+            getHolarchyByAddress(hAddress[1]+'.'+hAddress[2]);
+        else if (GetUrlValue('address'))
+            getHolarchyByAddress(GetUrlValue('address'));
+        else if (thisMap)
+            getHolarchyByAddress("map."+BROWSER.map)
+        else
+            getHolarchyByAddress("map.home")
     }
 
     BROWSER.recouple = function()
@@ -645,9 +650,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
         // If there is a session, authenticate
         if (sessionKey && sessionKey != "null")
+        {
             CORELINK.auth({key: sessionKey});
+        }
         else
+        {
             setLoggedOutState();
+            loadRootHolon();
+        }
     }
     BROWSER.authenticateSession = authenticateSession;
 

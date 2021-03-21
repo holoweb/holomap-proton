@@ -1,7 +1,7 @@
 /*
 
 Holomap - Real-time collaborative holonic mapping platform
-Copyright (C) 2020 Chris Larcombe
+Copyright (C) 2021 Chris Larcombe
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,7 @@ var fs = require('fs');
 var crypto = require('crypto'); 
 var Datastore = require('nedb');
 var nodemailer = require("nodemailer");
+var cookie = require('cookie');
 
 httpAPI = null;
 
@@ -46,8 +47,8 @@ HolomapMembrane = (function()
 	var authorisedEmails; // based on subscriptions
 
 	var smtpTransport;
-
 	var apiConfig;
+	var socketLog;
 
 	function HolomapMembrane(c)
 	{
@@ -77,6 +78,13 @@ HolomapMembrane = (function()
 		io.origins(origins);
 		console.log("authorised domains: ", origins.join(", "))
 
+		if (apiConfig.log && apiConfig.log.socket)
+		{
+			socketLog = {};
+			for (var type in apiConfig.log.socket)
+				socketLog[type] = new Datastore({ filename: './log/socket.'+type, autoload: true });
+		}
+
 		if (apiConfig.subscriptions)
 		{
 			subscriptions = new Datastore({ filename: './subscriptions', autoload: true });
@@ -90,17 +98,19 @@ HolomapMembrane = (function()
 
 		io.sockets.on('connection', function (socket)
 		{
-			//console.log("New connection:", socket.handshake.headers.host, socket.handshake.address)
+			log('connection', socket);
 
 			// ---------------------------------------------
 
 			socket.on('disconnect', function()
 			{
+				log('disconnect', socket);
 				disconnect(socket);
 			});
 
 			socket.on('recouple', function(request)
 			{
+				log('recouple', socket, request);
 				recouple(socket, request);
 			});
 			
@@ -108,79 +118,89 @@ HolomapMembrane = (function()
 
 			socket.on('auth', function(request)
 			{
+				log('auth', socket, request);
 				auth(socket, request);
 			});
-
-			//--> logout
 
 			// ---------------------------------------------
 
 			socket.on('get_ontology', function(request)
 			{
+				log('get_ontology', socket, request);
 				get_ontology(socket, request);
 			});
 
 			socket.on('get_holarchy', function(request)
 			{
+				log('get_holarchy', socket, request);
 				get_holarchy(socket, request);
 			});
 
 			socket.on('get_holon', function(request)
 			{
+				log('get_holon', socket, request);
 				get_holon(socket, request);
 			});
 
 			socket.on('get_parent_holons', function(request)
 			{
+				log('get_parent_holons', socket, request);
 				get_parent_holons(socket, request);
 			});
 
 			socket.on('get_grandchildren', function(request)
 			{
+				log('get_grandchildren', socket, request);
 				get_grandchildren(socket, request);
 			});
 
 			socket.on('search', function(request)
 			{
+				log('search', socket, request);
 				search(socket, request);
 			});
-
-			// --> getHolonTypes
 
 			// ---------------------------------------------
 
 			socket.on('create_linked_holon', function(request)
 			{
+				log('create_linked_holon', socket, request);
 				create_linked_holon(socket, request);
 			});
 
 			socket.on('create_link', function(request)
 			{
+				log('create_link', socket, request);
 				create_link(socket, request);
 			});
 
 			socket.on('destroy_link', function(request)
 			{
+				log('destroy_link', socket, request);
 				destroy_link(socket, request);
 			});
 
 			socket.on('change_link', function(request)
 			{
+				log('change_link', socket, request);
 				change_link(socket, request);
 			});
 
 			socket.on('change_holon', function(request)
 			{
+				log('change_holon', socket, request);
 				change_holon(socket, request);
 			});
 
 			socket.on('change_holarchy_permission', function(request)
 			{
+				log('change_holarchy_permission', socket, request);
 				change_holarchy_permission(socket, request);
 			});
 
 			socket.on('set_holonic_address', function(request)
 			{
+				log('set_holonic_address', socket, request);
 				set_holonic_address(socket, request);
 			});
 
@@ -188,6 +208,7 @@ HolomapMembrane = (function()
 
 			socket.on('target_holon', function(request)
 			{
+				log('target_holon', socket, request);
 				target_holon(socket, request);
 			});
 
@@ -195,11 +216,13 @@ HolomapMembrane = (function()
 
 			socket.on('create_user', function(request)
 			{
+				log('create_user', socket, request);
 				create_user(socket, request);
 			});
 
 			socket.on('reset_password', function(request)
 			{
+				log('reset_password', socket, request);
 				reset_password(socket, request);
 			});
 
@@ -207,14 +230,43 @@ HolomapMembrane = (function()
 
 			socket.on('create_comment', function(request)
 			{
+				log('create_comment', socket, request);
 				create_comment(socket, request);
 			});
 
 			socket.on('get_comments', function(request)
 			{
+				log('get_comments', socket, request);
 				get_comments(socket, request);
 			});
 		});
+	}
+
+	var log = function(type, socket, request)
+	{
+		const cookies = cookie.parse(socket.request.headers.cookie || '');
+		if (apiConfig.log && apiConfig.log.socket && apiConfig.log.socket[type] && socketLog[type])
+		{
+			var u;
+			if (socketAuth[socket.id])
+				u = crypto.createHash('sha512').update(socketAuth[socket.id], 'utf8').digest('base64');
+			else if (cookies.u)
+				u = cookies.u;
+
+			socketLog[type].insert(
+				{
+					t: new Date().getTime(),
+					ip: socket.handshake.address,
+					i: cookies.i,
+					u: u,
+					r: request
+				},
+			function(err)
+			{
+				if (err)
+					console.log("socket log " + type + " - error saving log:", err);
+			});
+		}
 	}
 
 	httpAPI = function(request, param, req, res)
