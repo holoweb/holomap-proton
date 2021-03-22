@@ -241,7 +241,20 @@ app.get('/(\~?):com\.:hol', function (req, res)
 	if (req.params['com'] != 'socket' && req.params['hol'] != 'io')
 	{
 		if (req.params['com']+'.'+req.params['hol'] != "img")
-			res.cookie('holonicaddress', req.params['com']+'.'+req.params['hol'], { maxAge: 10000, httpOnly: false});
+			res.cookie('holonicaddress', req.params['com']+'.'+req.params['hol']);
+
+		var id;
+		if (!req.cookies.i)
+		{
+			id = randomString(50);
+			res.cookie('i', id, {maxAge: 1000*60*60*24*9999} );
+		}
+		else
+		{
+			id = req.cookies.i;
+		}
+
+		logPageLoad(req,'index',id)
 
 		if (process.env.HOLOMAP_DEV)
 			res.sendfile(holomapPublicRootPath + 'index.dev.html');
@@ -250,12 +263,22 @@ app.get('/(\~?):com\.:hol', function (req, res)
 	}
 });
 
-app.get('/(\~?):com', function (req, res)
+app.get('/(\~?):map', function (req, res)
 {
-	if (req.params['com'] != 'socket' && req.params['hol'] != 'io')
+	if (req.params['map'] != 'socket')
 	{
-		if (req.params['com'] != "img")
-			res.cookie('holonicaddress', req.params['com'], { maxAge: 10000, httpOnly: false});
+		var id;
+		if (!req.cookies.i)
+		{
+			id = randomString(50);
+			res.cookie('i', id, {maxAge: 1000*60*60*24*9999} );
+		}
+		else
+		{
+			id = req.cookies.i;
+		}
+
+		logPageLoad(req,'index',id,req.params['map'])
 
 		if (process.env.HOLOMAP_DEV)
 			res.sendfile(holomapPublicRootPath + 'index.dev.html');
@@ -274,7 +297,7 @@ const randomString = (length = 8) => {
     return str;
 };
 
-function logPageLoad(req,page,id)
+function logPageLoad(req,page,id,map)
 {
 	if (apiConfig.log && apiConfig.log.pageload)
 	{
@@ -286,7 +309,8 @@ function logPageLoad(req,page,id)
 			r: req.header('referrer'),
 			i: id,
 			u: req.cookies.u,
-			p: page
+			p: page,
+			m: map
 			}, function(err)
 		{
 			if (err)
