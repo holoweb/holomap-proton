@@ -239,6 +239,22 @@ HolomapMembrane = (function()
 				log('get_comments', socket, request);
 				get_comments(socket, request);
 			});
+
+			// Error handling
+			
+			socket.on('error', function(err)
+			{
+				console.log("** SOCKET ERROR ** ", err)
+			});
+			socket.on('connect_failed', function(err)
+			{
+				console.log("** SOCKET CONNECT FAILED ** ", err)
+			});
+			socket.on('reconnect_failed', function(err)
+			{
+				console.log("** SOCKET RECONNECT FAILED ** ", err)
+			});
+			
 		});
 	}
 

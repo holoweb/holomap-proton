@@ -75,7 +75,10 @@ else
 
 // Routing: root
 
-
+var sendFile = function(res,file)
+{
+	res.sendFile(file, {root: holomapPublicRootPath});
+}
 
 app.get('/', function (req, res)
 {
@@ -96,28 +99,28 @@ app.get('/', function (req, res)
 	}
 	
 	if (process.env.HOLOMAP_DEV)
-		res.sendfile(holomapPublicRootPath + 'index.dev.html');
+		sendFile(res,'index.dev.html');
 	else
-		res.sendfile(holomapPublicRootPath + 'index.html');
+		sendFile(res,'index.html');
 
 	logPageLoad(req,'index',id)
 });
 
 app.get('/terms', function (req, res)
 {
-	res.sendfile(holomapPublicRootPath + 'terms.html');
+	sendFile(res,'terms.html');
 	logPageLoad(req,'terms',req.cookies.i)
 });
 
 app.get('/privacy', function (req, res)
 {
-	res.sendfile(holomapPublicRootPath + 'privacy.html');
+	sendFile(res,'privacy.html');
 	logPageLoad(req,'privacy',req.cookies.i)
 });
 
 app.get('/portal', function (req, res)
 {
-	res.sendfile(holomapPublicRootPath + 'portal.html');
+	sendFile(res,'portal.html');
 	logPageLoad(req,'portal',req.cookies.i)
 });
 
@@ -135,9 +138,9 @@ app.get('/embed', function (req, res)
 	}
 
 	if (process.env.HOLOMAP_DEV)
-		res.sendfile(holomapPublicRootPath + 'embed.dev.html');
+		sendFile(res,'embed.dev.html');
 	else
-		res.sendfile(holomapPublicRootPath + 'embed.html');
+		sendFile(res,'embed.html');
 
 	logPageLoad(req,'embed',id)
 });
@@ -192,46 +195,46 @@ app.post('/img/user', cpUpload, function(req, res)
 if (process.env.HOLOMAP_DEV)
 {
 	app.get('/holomap.js', function (req, res) {
-		res.sendfile(holomapPublicRootPath + req.url);
+		sendFile(res,req.url);
 	});
 
 	app.get('/js/*.js', function (req, res) {
-		res.sendfile(holomapPublicRootPath + req.url);
+		sendFile(res,req.url);
 	});
 }
 else
 {
 	app.get('/holomap.build.js', function (req, res) {
-		res.sendfile(holomapPublicRootPath + req.url);
+		sendFile(res,req.url);
 	});
 }
 
 app.get('/lib/*.js', function (req, res) {
-	res.sendfile(holomapPublicRootPath + req.url);
+	sendFile(res,req.url);
 });
 app.get('/lib/vendor/*.js', function (req, res) {
-	res.sendfile(holomapPublicRootPath + req.url);
+	sendFile(res,req.url);
 });
 app.get('/json/*.json', function (req, res) {
-	res.sendfile(holomapPublicRootPath + req.url);
+	sendFile(res,req.url);
 });
 app.get('/ico/*.ico', function (req, res) {
-	res.sendfile(holomapPublicRootPath + req.url);
+	sendFile(res,req.url);
 });
 app.get('/mp3/*.mp3', function (req, res) {
-	res.sendfile(holomapPublicRootPath + req.url);
+	sendFile(res,req.url);
 });
 app.get('/ttf/*.ttf', function (req, res) {
-	res.sendfile(holomapPublicRootPath + req.url);
+	sendFile(res,req.url);
 })
 app.get('/favicon.ico', function (req, res) {
-	res.sendfile(holomapPublicRootPath + '/ico/favicon.ico');
+	sendFile(res,'/ico/favicon.ico');
 });
 app.get('/img/*.(gif|png|jpg|jpeg)', function (req, res) {
-	res.sendfile(holomapPublicRootPath + req.url);
+	sendFile(res,req.url);
 });
 app.get('/css/*.(css|png)', function (req, res) {
-	res.sendfile(holomapPublicRootPath + req.url);
+	sendFile(res,req.url);
 });
 
 // Routing: holonic address
@@ -257,9 +260,9 @@ app.get('/(\~?):com\.:hol', function (req, res)
 		logPageLoad(req,'index',id)
 
 		if (process.env.HOLOMAP_DEV)
-			res.sendfile(holomapPublicRootPath + 'index.dev.html');
+			sendFile(res,'index.dev.html');
 		else
-			res.sendfile(holomapPublicRootPath + 'index.html');
+			sendFile(res,'index.html');
 	}
 });
 
@@ -281,9 +284,9 @@ app.get('/(\~?):map', function (req, res)
 		logPageLoad(req,'index',id,req.params['map'])
 
 		if (process.env.HOLOMAP_DEV)
-			res.sendfile(holomapPublicRootPath + 'index.dev.html');
+			sendFile(res,'index.dev.html');
 		else
-			res.sendfile(holomapPublicRootPath + 'index.html');
+			sendFile(res,'index.html');
 	}
 });
 
