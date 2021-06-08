@@ -58,12 +58,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
         _CORELINK.init(BROWSER, function()
         {
-            // Authenticate
-            authenticateSession();
-
-            // Request ontology
-            CORELINK.emit('get_ontology');
-
             // Load home holon
             var domainInfo = location.hostname.replace("www.","").split('.');
             var map = location.href.replace(origin+'/','').match(/^([a-z0-9]+)$/i);
@@ -74,6 +68,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 thisMap = map[1];
 
             BROWSER.map = thisMap;
+
+            // Authenticate
+            authenticateSession();
+
+            // Request ontology
+            CORELINK.emit('get_ontology');
         }); 
 
         $("#searchField").keyup(function(event){

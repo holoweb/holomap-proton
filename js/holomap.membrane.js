@@ -309,7 +309,7 @@ HolomapMembrane = (function()
 							req.body.line_items && req.body.line_items.length>=1 &&
 							req.body.line_items[0].name == apiConfig.subscriptions.name)
 						{
-							var email = req.body.billing.email;
+							var email = req.body.billing.email.toLowerCase();
 							console.log("subscription created, authorised", email)
 
 							subscriptions.insert({e: email, t: new Date().getTime()}, function(err)
