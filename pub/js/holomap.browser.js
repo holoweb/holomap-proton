@@ -757,8 +757,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             document.getElementById('addressIndicator').style.visibility = "visible";
             BROWSER.updateAddressIndicator(h);
 
-
-            if (h._t == "map" && h._n == BROWSER.map && h.css)
+            if (h._t == "map" && h._n == 'home' || h._n == BROWSER.map && h.css)
             {
                 function addStyle(styleString)
                 {
@@ -769,9 +768,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
                 addStyle(h.css);
             }
-
-
-
         }
         else
         {
