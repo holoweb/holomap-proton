@@ -123,7 +123,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 					theobject.el.style.left = l + "px";
 					theobject.el.style.width = (w) + "px";
-					console.log(l,w)
 					theobject.el.style.height = "100%";
 					
 					RESIZER.el = theobject.el;

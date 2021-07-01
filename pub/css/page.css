@@ -68,6 +68,9 @@ body
 	background: url(/img/info-panel_bar-tile-hrz.png) repeat-x;
 }
 
+
+
+
 .infoPanelHeaderIcon
 {
 	position:absolute;
@@ -1015,3 +1018,31 @@ select
 {
 	color:#777777;
 }
+
+#earthlink
+{
+	text-align: right;
+	position: absolute;
+	right:10px;
+	bottom:10px;
+	z-index: 100;
+	margin-right: 10px;
+}
+
+#pagelogo
+{
+	position: absolute;
+	left:8px;
+	bottom:35px;
+	z-index: 100;
+	height: 65px;
+	width: 230px;
+	opacity: 0.2;
+	filter: alpha(opacity=40);
+}
+
+#pagelogo:hover {
+	opacity: 0.6;
+	filter: alpha(opacity=100);
+}
+

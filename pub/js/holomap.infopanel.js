@@ -63,6 +63,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             RESIZER = m;
             RESIZER.init(width, minSize, onPanelResized);
             positionInfoPanel();
+            document.getElementById('earthlink').style.right = width;
             document.getElementById('simple').style.visibility = "visible";
             RESIZER2 = m2;
             RESIZER2.init(400, 200, function(){});
@@ -1520,6 +1521,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
     {
         width = w;
         VIEWER.infoPanelResized(w);
+
+        document.getElementById('earthlink').style.right = width
+
+
     }
 
     var onWindowResize = function()
@@ -1527,6 +1532,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         width = Math.max(minSize, ratio * self.innerWidth);
         positionInfoPanel();
         VIEWER.infoPanelResized(width);
+        document.getElementById('earthlink').style.right = width
+
     }
     INFOPANEL.onWindowResize = onWindowResize;
 
