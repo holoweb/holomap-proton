@@ -60,7 +60,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         {
             // Load home holon
             var domainInfo = location.hostname.replace("www.","").split('.');
-            var map = location.href.replace(origin+'/','').match(/^([a-z0-9]+)$/i);
+            var map = location.href.replace(origin+'/','').match(/^([a-z0-9]+)(\?.+)?$/i);
 
             if (domainInfo.length == 3)
                 thisMap = domainInfo[0];
