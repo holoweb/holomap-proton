@@ -69,11 +69,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
             BROWSER.map = thisMap;
 
-            // Authenticate
-            authenticateSession();
-
             // Request ontology
             CORELINK.emit('get_ontology');
+            // after ontology loads, then execute authenticateSession
         }); 
 
         $("#searchField").keyup(function(event){
@@ -970,6 +968,9 @@ if (BROWSER.targetHolon && BROWSER.targetHolon._alm)
                 },1000)
             }
         }
+
+        if (p.ontology)
+            authenticateSession();
     }
 
     ////    

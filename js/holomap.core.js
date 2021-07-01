@@ -362,7 +362,7 @@ HolomapCore = (function()
 					{
 						holons[i].__count = res;
 						if (i == holons.length - 1)
-							socket.emit('receive_holarchy_packet', {h: holons});
+							socket.emit('receive_holarchy_packet', {h: holons, ontology: true});
 						else
 							getNextTotal(i+1, holons)
 					});
@@ -371,7 +371,7 @@ HolomapCore = (function()
 			}
 			else
 			{
-				socket.emit('receive_holarchy_packet', {h: hns});
+				socket.emit('receive_holarchy_packet', {h: hns, ontology: true});
 			}
 		});
 	}
