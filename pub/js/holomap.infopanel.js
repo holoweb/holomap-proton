@@ -1199,10 +1199,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         html += "<p align='center' style='margin-bottom:20px'><br><input id='saveContentButton' type='button' value='Save Changes' class='saveContentButton'></input></p>";
         html += '<span>Holon background:</span><input type="file" id="userPhotoInput" name="userPhoto" class="button" style="margin: 5px; font-size: 10pt; padding: 5px; background: rgba(0,0,0,0); color: white;" class="inputButton"/>';
 
-        
-
-
-        if (['map','prep','profile'].indexOf(holon._t) == -1)
+        /* if (['map','prep','profile'].indexOf(holon._t) == -1)
         {
             var ontology = BROWSER.getOntology();
             html += "<select id='typeSelector'>"
@@ -1210,8 +1207,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 if (['map','prep','profile','map','hmadmin'].indexOf(type) == -1)
                     html += "<option value='"+type+"' style='background:rgba("+ontology[type].rgb+",0.3)'>" + ontology[type].t + "</option>";
             html += "</select>";
-        }
-
+        } */
 
         html += "<form action='javascript:'>";
 
