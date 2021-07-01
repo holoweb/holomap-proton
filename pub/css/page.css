@@ -1027,6 +1027,13 @@ select
 	bottom:10px;
 	z-index: 100;
 	margin-right: 10px;
+	opacity: 0.6;
+	filter: alpha(opacity=40);
+}
+
+#earthlink:hover {
+	opacity: 1;
+	filter: alpha(opacity=100);
 }
 
 #pagelogo
@@ -1045,4 +1052,3 @@ select
 	opacity: 0.6;
 	filter: alpha(opacity=100);
 }
-
